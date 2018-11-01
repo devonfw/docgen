@@ -9,22 +9,37 @@ Documentation generator that can generate a complete and self-contained document
 
 == Usage
 
-1. Create a pom.xml in your wiki project inheriting the latest oasp-docgen pom
-2. Indicate the initial asciidoc document to start generation from by the `oasp.wiki.page` property:
+1. Clone your github wiki using git to your local machine
+2. Create a pom.xml in the cloned wiki directory with the following content:
 +
 ```xml
-<properties>
-  <oasp.wiki.page>CobiGen</oasp.wiki.page>
-</properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw.tools</groupId>
+    <artifactId>devon-docgen</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <groupId>my.group.id</groupId>
+  <artifactId>my-artifact-id</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>devon4j Wiki</name>
+
+  <properties>
+    <docgen.wiki.page>devon4j</docgen.wiki.page>
+  </properties>
+
+  <!-- run "mvn package" and get the PDF result in target/generated-docs/*.pdf -->
+  
+</project>
 ```
-3. Run mvn site on your wiki project to generate the PDF to be found in `/target/generated-docs`
+3. Run `mvn package` on your wiki project to generate the PDF to be found in `/target/generated-docs`
+4. If you want to deploy your documentation to maven central run `mvn deploy -P oss`.
 
-Experimental:
+== Custom Theme
 
-Develop your own PDF style by using the asciidoctor facilities. You can point the generation to your new theme by stating the `oasp.asciidoc.pdf.stylesdir` property:
-
-```xml
-<properties>
-  <oasp.asciidoc.pdf.stylesdir>./theme</oasp.asciidoc.pdf.stylesdir>
-</properties>
-```
+You can develop your own style by using the asciidoctor facilities. Therefore create your own theme in the path `theme/custom-theme.yml`.
