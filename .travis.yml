@@ -1,0 +1,10 @@
+jdk:
+  - oraclejdk8
+script:
+  - cd ..
+  - git clone https://github.com/devonfw/tools-cobigen.wiki.git
+  - cd oasp-docgen
+  - mvn clean install
+  - cd ../tools-cobigen.wiki
+  - mvn clean site
+sudo: false

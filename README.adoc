@@ -1,0 +1,30 @@
+= devon-docgen
+
+image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/devon-docgen/blob/develop/LICENSE]
+image:https://img.shields.io/maven-central/v/com.devonfw.java.modules/devon4j-basic.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.java.modules]
+image:https://travis-ci.org/devonfw/devon4j.svg?branch=develop["Build Status",link="https://travis-ci.org/devonfw/devon4j"]
+
+
+Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.
+
+== Usage
+
+1. Create a pom.xml in your wiki project inheriting the latest oasp-docgen pom
+2. Indicate the initial asciidoc document to start generation from by the `oasp.wiki.page` property:
++
+```xml
+<properties>
+  <oasp.wiki.page>CobiGen</oasp.wiki.page>
+</properties>
+```
+3. Run mvn site on your wiki project to generate the PDF to be found in `/target/generated-docs`
+
+Experimental:
+
+Develop your own PDF style by using the asciidoctor facilities. You can point the generation to your new theme by stating the `oasp.asciidoc.pdf.stylesdir` property:
+
+```xml
+<properties>
+  <oasp.asciidoc.pdf.stylesdir>./theme</oasp.asciidoc.pdf.stylesdir>
+</properties>
+```
