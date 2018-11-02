@@ -13,7 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.project>devonfw/devon-docgen</github.project>
-    <docgen.wiki.page>docgen</docgen.wiki.page>
+    <docgen.wiki.page>README</docgen.wiki.page>
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
     <docgen.asciidoc.target>${basedir}/target/asciidoc/</docgen.asciidoc.target>
     <docgen.generated.docs>${basedir}/target/generated-docs/</docgen.generated.docs>
