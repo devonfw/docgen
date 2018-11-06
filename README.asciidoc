@@ -1,7 +1,9 @@
+= Devonfw Documentation Generator
+The devonfw community
+${project.version}, ${buildtime}: Subtitle {doctitle}
+
 :toc:
 toc::[]
-
-= Devonfw Documentation Generator
 
 image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/devon-docgen/blob/develop/LICENSE]
 image:https://img.shields.io/maven-central/v/com.devonfw.tools/devon-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devon-docgen]
