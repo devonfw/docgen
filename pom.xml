@@ -41,6 +41,10 @@
       <organization>Capgemini</organization>
     </developer>
     <developer>
+      <name>Jörg Hohwille</name>
+      <organization>Capgemini</organization>
+    </developer>
+    <developer>
       <name>Jaime Diaz Gonzalez</name>
       <organization>Capgemini</organization>
     </developer>
@@ -51,10 +55,6 @@
   </developers>
 
   <contributors>
-    <contributor>
-      <name>Jörg Hohwille</name>
-      <organization>Capgemini</organization>
-    </contributor>
     <contributor>
       <name>Simon Röger</name>
       <organization>Capgemini</organization>
@@ -115,7 +115,7 @@
                 <artifact>
                   <file>${docgen.generated.docs}/${docgen.wiki.page}.pdf</file>
                   <type>pdf</type>
-                </artifact>                                
+                </artifact>
               </artifacts>
               <archive>
                 <addMavenDescriptor>true</addMavenDescriptor>
@@ -161,20 +161,29 @@
                     </fileset>
                   </path>
                   <sequential>
-                    <var name="currentfilename" unset="true"/>
-                    <basename property="currentfilename" file="@{asciidoc-file}" suffix=".asciidoc"/>
+                    <!-- unset variable to ensure it is properly updated in next basename task -->
+                    <var name="filename" unset="true"/>
                     <basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/>
                     <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
                       <filterchain>
                         <tokenfilter>
                           <linetokenizer/>
-                          <replaceregex pattern="\[\[" replace="[[${currentfilename}_" flags="g"/>
-                          <replaceregex pattern="^(==+) (.*)" replace="[[${currentfilename}_\2]]${line.separator}\1 \2" flags="g"/>                          
-                          <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>                         
-                          <replaceregex pattern="link:([^#:]*)\[([^#:]*)\]" replace="&lt;&lt;\1,\2>>" flags="g"/>
-                          <replaceregex pattern="link:([^#:]*)#([^#:]*)\[([^#:]*)\]" replace="link:\1#\1_\2[\3]" flags="g"/>
+                          <!-- make anchors unique by prefixing with filename -->
+                          <replaceregex pattern="\[\[" replace="[[${filename}_" flags="g"/>
+                          <!-- automatically generate anchors for sections -->
+                          <replaceregex pattern="^(==+) (.*)" replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
+                          <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
+                          <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>
+                          <!-- fix xrefs to also include filename prefix -->
+                          <replaceregex pattern="xref:(\w*)" replace="xref:${filename}_\1" flags="g"/>
+                          <!-- fix links to entire asciidoc file (wiki page) with default linktext by converting into xref inter document ref -->
+                          <replaceregex pattern="link:([^#:]*)\[\]" replace="xref:\1[\1]" flags="g"/>
+                          <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
+                          <replaceregex pattern="link:([^#:]*)\[" replace="xref:\1[" flags="g"/>
+                          <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
+                          <replaceregex pattern="link:([^#:]*)#(\w*)\[" replace="xref:\1_\2[" flags="g"/>
                           <scriptfilter language="javascript">
-                            // This script is used for removing special characters from titles like: [[Title]]
+                            // This script is used for removing special characters from titles (generated for sections) like: [[Title]]
                             var text = self.getToken();
                             if (text.startsWith('[[')) {
                               var index = text.indexOf(']]');
@@ -182,7 +191,7 @@
                               var regExpression = /([^_]+)/g;
                               var regResult = content.match(regExpression);
                               if (regResult){
-                                var section = regResult[regResult.length-1];        
+                                var section = regResult[regResult.length-1];
                                 text = text.replace(section, section.toLowerCase());
                               }
 
@@ -202,52 +211,21 @@
                             }
                           </scriptfilter>
                           <scriptfilter language="javascript">
-                            // This script is used for transforming the links to sections (E.g.: link:Home#some_section) to case insensitive.
-                            var text = self.getToken();
-                            // First we match the regular expression
-                            var expr = /link:([^#:]*)#([^#:]*)\[([^#:]*)\]/g;
-                            var result = text.match(expr);
-                            var replacement = "null";
-                            // We traverse through all the links retrieved
-                            for (var i in result) {
-                              var element = result[i];
-                              // We try to get the strings for making them lower case
-                              var indexA = element.indexOf('link:');
-                              var indexB = element.indexOf('#');
-                              fileName = element.substring(indexA+5, indexB);
-                                    
-                              indexA = element.indexOf('[');
-                              section = element.substring(indexB+1, indexA);//.toLowerCase();;
-
-                              if (section.length > fileName.length){
-                                var sectionName = section.replace(fileName, '');
-                                section = section.replace(sectionName, sectionName.toLowerCase().replace(/-/g,''));
-                              }
-
-                              var indexC = element.indexOf(']');
-                              hyperlink = element.substring(indexA+1, indexC);
-
-                              // We replace the text
-                              replacement = element.replace(element,"&lt;&lt;"+fileName+"#"+section+","+hyperlink+">>");
-                              text = text.replace(element, replacement);
-                            }
-                            self.setToken(text);
-                          </scriptfilter>
-                          <scriptfilter language="javascript">
                             // This script is used for replacing the '-' from xref:Section-Name
                             var text = self.getToken();
                             var expr = /xref:([^[]+)+/g;
                             var result = text.match(expr);
-                            if(result){
-                              for (var i in result){
+                            if (result) {
+                              for (var i in result) {
                                 var element = result[i];
                                 text = text.replace(element, element.replace(/\-/g,''));
                               }
                             }
-                            self.setToken(text);                            
+                            self.setToken(text);
                           </scriptfilter>
-                          <replaceregex pattern="^(=) (.*)" replace="[[${currentfilename}]]${line.separator}\1 \2" flags="g"/>
-                          <replaceregex pattern="xref:([^#:]*)\[([^#:]*)\]" replace="&lt;&lt;${currentfilename}_\1,\2>>" flags="g"/>
+                          <!-- insert top-level anchor for file so links to this enire file work after being resolved as xref  -->
+                          <replaceregex pattern="^(=) (.*)" replace="[[${filename}]]${line.separator}\1 \2" flags="g"/>
+                          <!-- resolve maven variables -->
                           <replaceregex pattern="\$\{project\.version\}" replace="${project.version}" flags="g"/>
                           <replaceregex pattern="\$\{project\.artifactId\}" replace="${project.artifactId}" flags="g"/>
                           <replaceregex pattern="\$\{buildtime\}" replace="${buildtime}" flags="g"/>
@@ -337,18 +315,13 @@
     </profile>
     
     <profile>
-      <id>oss</id>
+      <id>deploy</id>
       <build>
-        <plugins>          
+        <plugins>
           <!-- Sign artifacts with PGP -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <!--
-            <configuration>
-              <keyname>${docgen.gpg.keyname}</keyname>
-            </configuration>
-            -->
             <executions>
               <execution>
                 <id>sign-artifacts</id>
