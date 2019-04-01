@@ -7,7 +7,7 @@ toc::[]
 
 image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/devon-docgen/blob/develop/LICENSE]
 image:https://img.shields.io/maven-central/v/com.devonfw.tools/devon-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devon-docgen]
-image:https://travis-ci.org/devonfw/devon-docgen.svg?branch=develop["Build Status",link="https://travis-ci.org/devonfw/devon-docgen"]
+image:https://travis-ci.org/devonfw/devon-docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/devon-docgen"]
 
 DocGen is a tool that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.
 
