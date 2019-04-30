@@ -180,10 +180,10 @@
                           <replaceregex pattern="^(==+) (.*)" replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
                           <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>
-                          <!-- fix xrefs to also include filename prefix -->
-                          <replaceregex pattern="xref:(\w*)\[([^\]]+)\]" replace="xref:${filename}_\1[\2]" flags="g"/>
                           <!-- fix xrefs with default linktext to also include filename prefix -->
-                          <replaceregex pattern="xref:(\w*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
+                          <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
+                          <!-- fix xrefs to also include filename prefix -->
+                          <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g"/>
                           <!-- fix links to entire asciidoc file (wiki page) with default linktext by converting into xref inter document ref -->
                           <replaceregex pattern="link:([^#:]*)\[\]" replace="xref:\1[\1]" flags="g"/>
                           <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
