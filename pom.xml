@@ -184,8 +184,10 @@
                           <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
                           <!-- fix xrefs to also include filename prefix -->
                           <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g"/>
-                          <!-- fix links to entire asciidoc file (wiki page) with default linktext by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)\[\]" replace="xref:\1[\1]" flags="g"/>
+                          <!-- fix links without linktext -->
+                          <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g"/>
+                          <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
+                          <replaceregex pattern="link:([^#:.\[]*)(#|\[)" replace="xref:\1.asciidoc\2" flags="g"/>
                           <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
                           <replaceregex pattern="link:([^#:]*)\[" replace="xref:\1[" flags="g"/>
                           <!-- fix links to anchor in other file (wik page) with default linktext by converting into xref inter document ref -->
