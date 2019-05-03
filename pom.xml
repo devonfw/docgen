@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.devonfw.tools</groupId>
   <artifactId>devon-docgen</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.</description>
@@ -145,6 +145,11 @@
             <artifactId>ant-nodeps</artifactId>
             <version>1.8.1</version>
           </dependency>
+          <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b5</version>
+          </dependency>
         </dependencies>
         <executions>
           <execution>
@@ -163,7 +168,8 @@
                   <sequential>
                     <!-- unset variable to ensure it is properly updated in next basename task -->
                     <var name="filename" unset="true"/>
-                    <basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/>
+                    <!--<basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/>-->
+                    <basename property="filename" file="@{asciidoc-file}"/>
                     <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
                       <filterchain>
                         <tokenfilter>
@@ -174,61 +180,32 @@
                           <replaceregex pattern="^(==+) (.*)" replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
                           <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>
-                          <!-- fix xrefs to also include filename prefix -->
-                          <replaceregex pattern="xref:(\w*)\[([^\]]+)\]" replace="xref:${filename}_\1" flags="g"/>
                           <!-- fix xrefs with default linktext to also include filename prefix -->
-                          <replaceregex pattern="xref:(\w*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
-                          <!-- fix links to entire asciidoc file (wiki page) with default linktext by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)\[\]" replace="xref:\1[\1]" flags="g"/>
+                          <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
+                          <!-- fix xrefs to also include filename prefix -->
+                          <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g"/>
+                          <!-- fix links without linktext -->
+                          <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g"/>
+                          <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
+                          <replaceregex pattern="link:([^#:.\[]*)(#|\[)" replace="xref:\1.asciidoc\2" flags="g"/>
                           <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
                           <replaceregex pattern="link:([^#:]*)\[" replace="xref:\1[" flags="g"/>
                           <!-- fix links to anchor in other file (wik page) with default linktext by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)#(\w*)\[\]" replace="xref:\1_\2[\1#\2]" flags="g"/>
+                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[\]" replace="xref:\1_\2[\1#\2]" flags="g"/>
                           <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)#(\w*)\[" replace="xref:\1_\2[" flags="g"/>
-                          <scriptfilter language="javascript">
-                            // This script is used for removing special characters from titles (generated for sections) like: [[Title]]
-                            var text = self.getToken();
-                            if (text.startsWith('[[')) {
-                              var index = text.indexOf(']]');
-                              var content = text.substring(2, index).trim();
-                              var regExpression = /([^_]+)/g;
-                              var regResult = content.match(regExpression);
-                              if (regResult){
-                                var section = regResult[regResult.length-1];
-                                text = text.replace(section, section.toLowerCase());
-                              }
-
-                              self.setToken(text.substring(0, index).trim()
-                                .replace(/ /g,'')
-                                .replace(/\?/g,'')
-                                .replace(/\¿/g,'')
-                                .replace(/!/g,'')
-                                .replace(/\¡/g,'')
-                                .replace(/\./g,'')
-                                .replace(/\'/g,'')
-                                .replace(/:/g,'')
-                                .replace(/\(/g,'')
-                                .replace(/\)/g,'')
-                                .replace(/&amp;/g,'')
-                                + text.substring(index));
-                            }
-                          </scriptfilter>
-                          <scriptfilter language="javascript">
-                            // This script is used for replacing the '-' from xref:Section-Name
-                            var text = self.getToken();
-                            var expr = /xref:([^[]+)+/g;
-                            var result = text.match(expr);
-                            if (result) {
-                              for (var i in result) {
-                                var element = result[i];
-                                text = text.replace(element, element.replace(/\-/g,''));
+                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1_\2[" flags="g"/>
+                          <scriptfilter language="beanshell" byline="true" setbeans="true"><![CDATA[
+                            String text = self.getToken();
+                            if (text.startsWith("[[")) {
+                              int end = text.indexOf("]]");
+                              if (end > 0) {
+                                String content = text.substring(2, end).trim().toLowerCase().replaceAll("[?¿!¡':()&]", "").replace(' ', '-');
+                                self.setToken("[[" + content + "]]" + text.substring(end + 2));
                               }
                             }
-                            self.setToken(text);
-                          </scriptfilter>
+                          ]]></scriptfilter>
                           <!-- insert top-level anchor for file so links to this enire file work after being resolved as xref  -->
-                          <replaceregex pattern="^(=) (.*)" replace="[[${filename}]]${line.separator}\1 \2" flags="g"/>
+                          <replaceregex pattern="^(=) " replace="[[${filename}]]${line.separator}\1 " flags="g"/>
                           <!-- resolve maven variables -->
                           <replaceregex pattern="\$\{project\.version\}" replace="${project.version}" flags="g"/>
                           <replaceregex pattern="\$\{project\.artifactId\}" replace="${project.artifactId}" flags="g"/>
