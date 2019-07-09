@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.devonfw.tools</groupId>
   <artifactId>devon-docgen</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.</description>
@@ -17,6 +17,7 @@
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
     <docgen.asciidoc.target>${basedir}/target/asciidoc/</docgen.asciidoc.target>
     <docgen.generated.docs>${basedir}/target/generated-docs/</docgen.generated.docs>
+    <docgen.images.dir>images</docgen.images.dir>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
     <asciidoctor.maven.plugin.version>1.5.7.1</asciidoctor.maven.plugin.version>
@@ -166,11 +167,31 @@
                     </fileset>
                   </path>
                   <sequential>
+
+                    <!-- unset variable to ensure it is properly updated in next property and dirname tasks -->
+                    <var name="path_to_copy_to" unset="true"/>
+                    <var name="file_path" unset="true"/>
+
+
+                    <property name="path_to_copy_to" value=""/>
+                    <dirname property="file_path" file="@{asciidoc-file}"/>
+
+                    <!-- Remove the path from the root directory until current sourceDirectory to obtain a relative path -->
+                    <script language="javascript">
+                      // overwrite existing property.
+                      project.setProperty(
+                        'path_to_copy_to',
+                        project.getProperty('file_path').replace(
+                          project.getProperty('basedir'),
+                          ''
+                        ).replace(/\\/g, '/').replace('/', ''));
+                    </script>
+
                     <!-- unset variable to ensure it is properly updated in next basename task -->
                     <var name="filename" unset="true"/>
                     <!--<basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/>-->
                     <basename property="filename" file="@{asciidoc-file}"/>
-                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
+                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}${path_to_copy_to}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
                       <filterchain>
                         <tokenfilter>
                           <linetokenizer/>
@@ -227,6 +248,26 @@
                     </fileset>
                   </path>
                 </copy>
+
+                <!-- Get all the dir called with resources -->
+                <for param="dirname">
+                  <path>
+                    <dirset dir="${docgen.asciidoc.source}" casesensitive="yes">
+                      <include name="**/${docgen.images.dir}/**"/>
+                    </dirset>
+                  </path>
+                  <sequential>
+                    <!-- Copy the resources -->
+                    <copy todir="${docgen.asciidoc.target}/${docgen.images.dir}">
+                      <path>
+                        <fileset dir="@{dirname}">
+                          <include name="**/*"/>
+                        </fileset>
+                      </path>
+                    </copy>
+                  </sequential>
+                </for>
+
               </target>
             </configuration>
             <goals>
