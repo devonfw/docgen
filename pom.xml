@@ -20,8 +20,8 @@
     <docgen.images.dir>images</docgen.images.dir>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
-    <asciidoctor.maven.plugin.version>1.5.7.1</asciidoctor.maven.plugin.version>
-    <asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
+    <asciidoctor.maven.plugin.version>1.5.8</asciidoctor.maven.plugin.version>
+    <asciidoctorj.pdf.version>1.5.0-alpha.18</asciidoctorj.pdf.version>
   </properties>
   
   <url>https://github.com/${github.project}</url>
@@ -199,8 +199,11 @@
                           <replaceregex pattern="\[\[" replace="[[${filename}_" flags="g"/>
                           <!-- automatically generate anchors for sections -->
                           <replaceregex pattern="^(==+) (.*)" replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
+
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
-                          <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>
+                          <replaceregex pattern="include\:\:(.*)\[" replace="include::\1.asciidoc[" flags="g"/>
+                          <replaceregex pattern="include\:\:(.*)((\.adoc)|(\.asc)|(\.asciidoc))(\.asciidoc)\[" replace="include::\1\2[" flags="g"/>
+
                           <!-- fix xrefs with default linktext to also include filename prefix -->
                           <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
                           <!-- fix xrefs to also include filename prefix -->
@@ -243,6 +246,7 @@
                     <fileset dir="${docgen.asciidoc.source}">
                       <exclude name="**/*.asciidoc"/>
                       <exclude name="**/target/**"/>
+                      <exclude name="**/${docgen.images.dir}/**/*"/>
                       <!-- exclude local m2 repository in Jenkins builds -->
                       <exclude name="**/.repository/**"/>
                     </fileset>
