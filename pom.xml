@@ -223,7 +223,7 @@
                             if (text.startsWith("[[")) {
                               int end = text.indexOf("]]");
                               if (end > 0) {
-                                String content = text.substring(2, end).trim().toLowerCase().replaceAll("[?¿!¡':()&]", "").replace(' ', '-');
+                                String content = text.substring(2, end).trim().toLowerCase().replaceAll("[?¿!¡':()&/“”`\"\\[\\]]", "").replace(' ', '-');
                                 self.setToken("[[" + content + "]]" + text.substring(end + 2));
                               }
                             }
