@@ -253,22 +253,27 @@
                   </path>
                 </copy>
 
-                <!-- Get all the dir called with resources -->
-                <for param="dirname">
-                  <path>
-                    <dirset dir="${docgen.asciidoc.source}" casesensitive="yes">
-                      <include name="**/${docgen.images.dir}/**"/>
-                    </dirset>
-                  </path>
+                <!-- Check all the directories with images (list received as argument) -->
+                <for list="${docgen.images.dir}" param="receiveddir">
                   <sequential>
-                    <!-- Copy the resources -->
-                    <copy todir="${docgen.asciidoc.target}/${docgen.images.dir}">
+                    <!-- For each directory check its subfolders and copy them-->
+                    <for param="imagesdir">
                       <path>
-                        <fileset dir="@{dirname}">
-                          <include name="**/*"/>
-                        </fileset>
+                        <dirset dir="${docgen.asciidoc.source}" casesensitive="yes">
+                          <include name="**/@{receiveddir}/**"/>
+                        </dirset>
                       </path>
-                    </copy>
+                      <sequential>
+                        <!-- Copy the resources -->
+                        <copy todir="${docgen.asciidoc.target}/@{receiveddir}">
+                          <path>
+                            <fileset dir="@{imagesdir}">
+                              <include name="**/*"/>
+                            </fileset>
+                          </path>
+                        </copy>
+                      </sequential>
+                    </for>
                   </sequential>
                 </for>
 
