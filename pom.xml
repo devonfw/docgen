@@ -301,6 +301,9 @@
           <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
           <imagesDir>${docgen.generated.docs}</imagesDir>
           <headerFooter>true</headerFooter>
+		  <attributes>
+			<allow-uri-read/>
+		  </attributes>
         </configuration>
       </plugin>
     </plugins>
