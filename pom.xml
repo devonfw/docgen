@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.devonfw.tools</groupId>
   <artifactId>devon-docgen</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.</description>
@@ -17,10 +17,11 @@
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
     <docgen.asciidoc.target>${basedir}/target/asciidoc/</docgen.asciidoc.target>
     <docgen.generated.docs>${basedir}/target/generated-docs/</docgen.generated.docs>
+    <docgen.images.dir>images</docgen.images.dir>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
-    <asciidoctor.maven.plugin.version>1.5.7.1</asciidoctor.maven.plugin.version>
-    <asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
+    <asciidoctor.maven.plugin.version>1.5.8</asciidoctor.maven.plugin.version>
+    <asciidoctorj.pdf.version>1.5.0-alpha.18</asciidoctorj.pdf.version>
   </properties>
   
   <url>https://github.com/${github.project}</url>
@@ -166,11 +167,31 @@
                     </fileset>
                   </path>
                   <sequential>
+
+                    <!-- unset variable to ensure it is properly updated in next property and dirname tasks -->
+                    <var name="path_to_copy_to" unset="true"/>
+                    <var name="file_path" unset="true"/>
+
+
+                    <property name="path_to_copy_to" value=""/>
+                    <dirname property="file_path" file="@{asciidoc-file}"/>
+
+                    <!-- Remove the path from the root directory until current sourceDirectory to obtain a relative path -->
+                    <script language="javascript">
+                      // overwrite existing property.
+                      project.setProperty(
+                        'path_to_copy_to',
+                        project.getProperty('file_path').replace(
+                          project.getProperty('basedir'),
+                          ''
+                        ).replace(/\\/g, '/').replace('/', ''));
+                    </script>
+
                     <!-- unset variable to ensure it is properly updated in next basename task -->
                     <var name="filename" unset="true"/>
                     <!--<basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/>-->
                     <basename property="filename" file="@{asciidoc-file}"/>
-                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
+                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}${path_to_copy_to}" encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}" verbose="true">
                       <filterchain>
                         <tokenfilter>
                           <linetokenizer/>
@@ -178,8 +199,11 @@
                           <replaceregex pattern="\[\[" replace="[[${filename}_" flags="g"/>
                           <!-- automatically generate anchors for sections -->
                           <replaceregex pattern="^(==+) (.*)" replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
+
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
-                          <replaceregex pattern="include\:\:([^.]*)\[" replace="include::\1.asciidoc[" flags="g"/>
+                          <replaceregex pattern="include\:\:(.*)\[" replace="include::\1.asciidoc[" flags="g"/>
+                          <replaceregex pattern="include\:\:(.*)((\.adoc)|(\.asc)|(\.asciidoc))(\.asciidoc)\[" replace="include::\1\2[" flags="g"/>
+
                           <!-- fix xrefs with default linktext to also include filename prefix -->
                           <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]" flags="g"/>
                           <!-- fix xrefs to also include filename prefix -->
@@ -199,7 +223,7 @@
                             if (text.startsWith("[[")) {
                               int end = text.indexOf("]]");
                               if (end > 0) {
-                                String content = text.substring(2, end).trim().toLowerCase().replaceAll("[?¿!¡':()&]", "").replace(' ', '-');
+                                String content = text.substring(2, end).trim().toLowerCase().replaceAll("[?¿!¡':()&/“”`\"\\[\\]]", "").replace(' ', '-');
                                 self.setToken("[[" + content + "]]" + text.substring(end + 2));
                               }
                             }
@@ -222,11 +246,37 @@
                     <fileset dir="${docgen.asciidoc.source}">
                       <exclude name="**/*.asciidoc"/>
                       <exclude name="**/target/**"/>
+                      <exclude name="**/${docgen.images.dir}/**/*"/>
                       <!-- exclude local m2 repository in Jenkins builds -->
                       <exclude name="**/.repository/**"/>
                     </fileset>
                   </path>
                 </copy>
+
+                <!-- Check all the directories with images (list received as argument) -->
+                <for list="${docgen.images.dir}" param="receiveddir">
+                  <sequential>
+                    <!-- For each directory check its subfolders and copy them-->
+                    <for param="imagesdir">
+                      <path>
+                        <dirset dir="${docgen.asciidoc.source}" casesensitive="yes">
+                          <include name="**/@{receiveddir}/**"/>
+                        </dirset>
+                      </path>
+                      <sequential>
+                        <!-- Copy the resources -->
+                        <copy todir="${docgen.asciidoc.target}/@{receiveddir}">
+                          <path>
+                            <fileset dir="@{imagesdir}">
+                              <include name="**/*"/>
+                            </fileset>
+                          </path>
+                        </copy>
+                      </sequential>
+                    </for>
+                  </sequential>
+                </for>
+
               </target>
             </configuration>
             <goals>
@@ -251,6 +301,9 @@
           <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
           <imagesDir>${docgen.generated.docs}</imagesDir>
           <headerFooter>true</headerFooter>
+		  <attributes>
+			<allow-uri-read/>
+		  </attributes>
         </configuration>
       </plugin>
     </plugins>
@@ -347,7 +400,7 @@
                   <goal>process-asciidoc</goal>
                 </goals>
                 <configuration>
-                  <sourceDocumentName>${oasp.wiki.page}.asciidoc</sourceDocumentName>
+                  <sourceDocumentName>${docgen.wiki.page}.asciidoc</sourceDocumentName>
                   <backend>pdf</backend>
                   <sourceHighlighter>coderay</sourceHighlighter>
                   <attributes>

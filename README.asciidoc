@@ -75,6 +75,13 @@ If you want to deploy your documentation to maven central run:
 mvn deploy -P oss
 --------
 
+It is a common practice to store all the images used in a folder called "images", so docgen search in "images" as default. If you want to specify other directory or multiple, it can be done as follows:
+
+[source,cmd]
+--------
+mvn clean package -Ddocgen.images.dir=images1,images2,...,imagesn
+--------
+
 == Guidelines
 In order to make DocGen work properly please follow these guidelines:
 
