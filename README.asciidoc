@@ -1,3 +1,5 @@
+:toc: right
+
 = Devonfw Documentation Generator
 The devonfw community
 ${project.version}, ${buildtime}: Subtitle {doctitle}
