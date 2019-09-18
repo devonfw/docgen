@@ -340,13 +340,16 @@
     </profile>
 
     <profile>
-      <id>deploy</id>
+      <id>oss</id>
       <build>
         <plugins>
           <!-- Sign artifacts with PGP -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <keyname>${gpg.keyname}</keyname>
+            </configuration>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
