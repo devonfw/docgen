@@ -9,13 +9,13 @@ image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=Licen
 image:https://img.shields.io/maven-central/v/com.devonfw.tools/devon-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devon-docgen]
 image:https://travis-ci.org/devonfw/devon-docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/devon-docgen"]
 
-DocGen is a tool that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.
+DocGen is a tool that can generate a complete and self-contained documentation as PDF and HTML from Asciidoc wiki pages.
 
 == Features
 With DocGen you can
 
 * maintain documentation on github wiki as individual pages using http://www.methods.co.nz/asciidoc[asciidoc] based on our xref:guidelines[guidelines].
-* generate a single and self-contained document as `PDF`, `ePub` or `HTML` from it
+* generate a single and self-contained document as `PDF` or `HTML` from it
 * convert links between wiki pages into document internal links
 * have a single table of contents per complete document as well as per wiki page
 
@@ -33,7 +33,7 @@ With DocGen you can
   <parent>
     <groupId>com.devonfw.tools</groupId>
     <artifactId>devon-docgen</artifactId>
-    <version>1.0.0</version>
+    <version>4.0.0</version>
   </parent>
   <groupId>my.group.id</groupId>
   <artifactId>my-artifact-id</artifactId>
@@ -45,7 +45,9 @@ With DocGen you can
     <docgen.wiki.page>my-main-page</docgen.wiki.page>
   </properties>
 
-  <!-- run "mvn package" and get the PDF result in target/generated-docs/*.pdf -->
+  <!-- run "mvn package -Doutput.format=pdf" and get the PDF result in target/generated-docs/*.pdf -->
+  
+  <!-- run "mvn package -Doutput.format=html" and get the HTML5 result in target/generated-docs/* -->
   
 </project>
 ```
@@ -79,7 +81,7 @@ It is a common practice to store all the images used in a folder called "images"
 
 [source,cmd]
 --------
-mvn clean package -Ddocgen.images.dir=images1,images2,...,imagesn
+mvn clean package -Doutput.format=pdf -Ddocgen.images.dir=images1,images2,...,imagesn
 --------
 
 == Guidelines
@@ -124,6 +126,9 @@ image::http://devonfw.github.io/devon4j/images/MyImage.svg["alt-text", width="45
 ** `introduction-*` is used for pages that are part of the introduction into the documentation (motivation and general goals).
 ** `devon-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
 ** `tutorial-*` is used for pages that are part of the tutorials.
+
+== Migration
+If you migrate from devon-docgen 3.x to 4.x generating PDFs, you now have to add `-Doutput.format=pdf` to your maven build command. Similarly, for html generation it would be `-Doutput.format=html`.
 
 == Tooling
 Our DocGen tool is technically based on the following tools:
