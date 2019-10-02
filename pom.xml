@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.devonfw.tools</groupId>
   <artifactId>devon-docgen</artifactId>
-  <version>4.0.0</version>
+  <version>4.1.0</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.</description>
@@ -20,8 +20,9 @@
     <docgen.images.dir>images</docgen.images.dir>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
-    <asciidoctor.maven.plugin.version>1.5.8</asciidoctor.maven.plugin.version>
+    <asciidoctor.maven.plugin.version>1.6.0</asciidoctor.maven.plugin.version>
     <asciidoctorj.pdf.version>1.5.0-alpha.18</asciidoctorj.pdf.version>
+    <asciidoctor.skip>false</asciidoctor.skip>
     <!-- You have to define the target format by a console parameter: -Doutput.format=pdf / -Doutput.format=html -->
   </properties>
 
@@ -133,6 +134,7 @@
             <id>pre-process-asciidoc</id>
             <phase>process-resources</phase>
             <configuration>
+              <skip>${asciidoctor.skip}</skip>
               <target>
                 <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
@@ -286,6 +288,11 @@
             <artifactId>asciidoctorj-pdf</artifactId>
             <version>${asciidoctorj.pdf.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-epub3</artifactId>
+            <version>1.5.0-alpha.9</version>
+          </dependency>
         </dependencies>
         <configuration>
           <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
@@ -322,6 +329,7 @@
                 </goals>
                 <phase>package</phase>
                 <configuration>
+                  <skip>${asciidoctor.skip}</skip>
                   <artifacts>
                     <artifact>
                       <file>${docgen.generated.docs}/${docgen.wiki.page}.pdf</file>
@@ -347,6 +355,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
             <configuration>
               <keyname>${gpg.keyname}</keyname>
             </configuration>
@@ -397,6 +406,7 @@
                   <goal>process-asciidoc</goal>
                 </goals>
                 <configuration>
+                  <skip>${asciidoctor.skip}</skip>
                   <sourceDocumentName>${docgen.wiki.page}.asciidoc</sourceDocumentName>
                   <backend>pdf</backend>
                   <sourceHighlighter>coderay</sourceHighlighter>
@@ -438,6 +448,7 @@
                   <goal>process-asciidoc</goal>
                 </goals>
                 <configuration>
+                  <skip>${asciidoctor.skip}</skip>
                   <sourceDocumentName>${docgen.wiki.page}.asciidoc</sourceDocumentName>
                   <backend>pdf</backend>
                   <sourceHighlighter>coderay</sourceHighlighter>
@@ -478,12 +489,14 @@
                   <goal>process-asciidoc</goal>
                 </goals>
                 <configuration>
+                  <skip>${asciidoctor.skip}</skip>
                   <preserveDirectories>true</preserveDirectories>
                   <imagesDir>${docgen.generated.docs}</imagesDir>
                   <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
                   <outputDirectory>${docgen.generated.docs}</outputDirectory>
                   <backend>html5</backend>
                   <sourceHighlighter>highlightjs</sourceHighlighter>
+                  <eruby>erb</eruby>
                   <attributes>
                     <icons>font</icons>
                     <experimental/>
@@ -492,6 +505,7 @@
                     <idprefix/>
                     <idseparator>-</idseparator>
                     <baseDir>./</baseDir>
+                    <linkcss>true</linkcss>
                   </attributes>
                 </configuration>
               </execution>
