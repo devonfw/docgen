@@ -129,6 +129,114 @@ image::http://devonfw.github.io/devon4j/images/MyImage.svg["alt-text", width="45
 ** `devon-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
 ** `tutorial-*` is used for pages that are part of the tutorials.
 
+=== Text styles
+
+_Italic Text_
+
+[source]
+----
+_Italic Text_
+----
+
+*Bold Text*
+
+[source]
+----
+*Bold Text*
+----
+
++Mono Spaced Text+
+
+[source]
+----
++Mono Spaced Text+
+----
+
+Text in ^Superscript^
+
+[source]
+----
+Text in ^Superscript^
+----
+
+Text in ~Subscript~
+
+[source]
+----
+Text in ~Subscript~
+----
+
+=== Titles
+
+A title can be initiated like this:
+
+[source]
+----
+= Level 1 header
+== Level 2 header
+== Level 3 header
+...
+----
+
+=== Lists
+
+Ordered and unordered lists can be created like this:
+
+[source]
+----
+Ordered list:
+. Item 1
+. Item 2
+. Item 3
+. ...
+
+Unordered list:
+* Item 1
+* Item 2
+* Item 3
+* ...
+----
+
+=== Tables
+
+The following example shows how a table can be created. Note that the _header_ flag is optional.
+
+[source]
+----
+[options="header"]
+|===
+|Header 1|Header 2| Header 3
+|  Item 1|  Item 2|   Item 3
+|     ...|     ...|      ...
+|===
+----
+
+=== Source Code
+
+If you want to show off some code examples, you can use the _code block_:
+
+[source]
+----
+ [source]
+ ----
+ some source code
+ ----
+----
+
+You can also specify which script language is used. This will allow GitHub to apply a matching color scheme to the code. Therefore, just add the name of the language used:
+
+[source]
+----
+[source, bash]
+----
+
+or
+
+[source]
+----
+[source, java]
+----
+
 == Migration
 If you migrate from devon-docgen 3.x to 4.x generating PDFs, you now have to add `-Doutput.format=pdf` to your maven build command. Similarly, for html generation it would be `-Doutput.format=html`.
 
