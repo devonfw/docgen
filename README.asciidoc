@@ -92,7 +92,7 @@ In order to make DocGen work properly please follow these guidelines:
 * Maintain the documentation as collection of wiki pages. 
 * For the wiki usage link (important) pages in the sidebar for navigation.
 * Use http://www.methods.co.nz/asciidoc/[AsciiDoc] for all wiki pages. This is not the default on github. Always switch `Edit mode` to `AsciiDoc` when creating new wiki pages.
-* For help on the syntax consult the http://asciidoctor.org/docs/asciidoc-writers-guide/[writers guide] and the http://powerman.name/doc/asciidoc[cheatsheet]
+* For help on the syntax consult the http://asciidoctor.org/docs/asciidoc-writers-guide/[writers guide] and the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference].
 * Start every page with the following AsciiDoc header:
 +
 [source,asciidoc]
