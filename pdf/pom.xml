@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw.tools</groupId>
+    <artifactId>devonfw-docgen</artifactId>
+    <version>${revision}${changelist}</version>
+  </parent>
+  <artifactId>devonfw-docgen-pdf</artifactId>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <description>Generates documentation as PDF from AsciiDoc pages.</description>
+
+  <properties>
+    <!-- <docgen.highlighter>coderay</docgen.highlighter> <docgen.backend>pdf</docgen.backend> 
+      <docgen.output.format>pdf</docgen.output.format> -->
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-doc</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${asciidoctor.skip}</skip>
+              <artifacts>
+                <artifact>
+                  <file>${docgen.generated.docs}/${docgen.wiki.page}.${docgen.output.format}</file>
+                  <type>${docgen.output.format}</type>
+                </artifact>
+              </artifacts>
+              <archive>
+                <addMavenDescriptor>true</addMavenDescriptor>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

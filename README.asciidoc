@@ -11,13 +11,13 @@ image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=Licen
 image:https://img.shields.io/maven-central/v/com.devonfw.tools/devon-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devon-docgen]
 image:https://travis-ci.org/devonfw/devon-docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/devon-docgen"]
 
-DocGen is a tool that can generate a complete and self-contained documentation as PDF and HTML from Asciidoc wiki pages.
+DocGen is a tool that can generate a complete and self-contained documentation as PDF, ePub or HTML from Asciidoc pages.
 
 == Features
 With DocGen you can
 
-* maintain documentation on github wiki as individual pages using http://www.methods.co.nz/asciidoc[asciidoc] based on our xref:guidelines[guidelines].
-* generate a single and self-contained document as `PDF` or `HTML` from it
+* maintain documentation on github in a folder together with you code or in github wiki as individual pages using http://www.methods.co.nz/asciidoc[asciidoc] based on our xref:guidelines[guidelines].
+* generate a single and self-contained document as `PDF`, `ePub` or `HTML` from it
 * convert links between wiki pages into document internal links
 * have a single table of contents per complete document as well as per wiki page
 
@@ -34,8 +34,8 @@ With DocGen you can
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.devonfw.tools</groupId>
-    <artifactId>devon-docgen</artifactId>
-    <version>4.0.0</version>
+    <artifactId>devonfw-docgen-«format»</artifactId>
+    <version>5.0.0</version>
   </parent>
   <groupId>my.group.id</groupId>
   <artifactId>my-artifact-id</artifactId>
@@ -44,15 +44,13 @@ With DocGen you can
   <name>My Cool Wiki</name>
 
   <properties>
-    <docgen.wiki.page>my-main-page</docgen.wiki.page>
-  </properties>
-
-  <!-- run "mvn package -Doutput.format=pdf" and get the PDF result in target/generated-docs/*.pdf -->
-  
-  <!-- run "mvn package -Doutput.format=html" and get the HTML5 result in target/generated-docs/* -->
-  
+    <docgen.wiki.page>«main-page»</docgen.wiki.page>
+  </properties>  
 </project>
 ```
+For `«format»` please fill in `pdf`, `html`, `epub`, or `all` to decide which format(s) you want to generate.
+For «main-page» fill in the filename of your main AsciiDoc file (without extension) to use as entry point for the generation.
+This file should contain the main title and configuration together with all the `include` directives to the individual AsciiDoc pages to include into your document.
 3. Add, commit and push it to github:
 +
 [source,cmd]
@@ -62,10 +60,10 @@ git commit -m "added pom.xml for docgen"
 git push
 --------
 4. Optional custom theme:
-You can develop your own style by using the asciidoctor facilities. Therefore create your own theme in the path `theme/custom-theme.yml` and also push it to the wiki git repo.
+You can develop your own style by using the asciidoctor facilities. Therefore create your own theme in the path `theme/custom-theme.yml` and also push it together with your documentation.
 
 == Usage
-To start the generation manually you need to clone the wiki with the documentation to generate as described above. Then open a command shell in the cloned project and call:
+To start the generation manually you need to clone the documentation to generate as described above. Then open a command shell in the cloned project and call:
 [source,cmd]
 --------
 mvn clean package
@@ -76,22 +74,17 @@ Then you will find the result in `target/generated-docs/`.
 If you want to deploy your documentation to maven central run:
 [source,cmd]
 --------
-mvn deploy -Dgpg.keyname=<yourkeyname> -Poss
+mvn deploy -Pdeploy
 --------
 
-It is a common practice to store all the images used in a folder called "images", so docgen search in "images" as default. If you want to specify other directory or multiple, it can be done as follows:
-
-[source,cmd]
---------
-mvn clean package -Doutput.format=pdf -Ddocgen.images.dir=images1,images2,...,imagesn
---------
+== Configuration
+It is a common practice to store all the images used in a folder called "images", so docgen search in "images" as default. If you want to specify other directory or multiple, you can override the variable `docgen.images.dir` in your POM. There are many other properties you may want to override to tweak and customize your generation. For details see our `pom.xml` files and read the https://asciidoctor.org/docs/asciidoctor-maven-plugin/#configuration[asciidoctor-maven-plugin documentation].
 
 == Guidelines
 In order to make DocGen work properly please follow these guidelines:
 
-* Maintain the documentation as collection of wiki pages. 
-* For the wiki usage link (important) pages in the sidebar for navigation.
-* Use http://www.methods.co.nz/asciidoc/[AsciiDoc] for all wiki pages. This is not the default on github. Always switch `Edit mode` to `AsciiDoc` when creating new wiki pages.
+* Maintain the documentation as collection of http://www.methods.co.nz/asciidoc/[AsciiDoc] pages.
+* If you are using github wikis this is not the default: Always switch `Edit mode` to `AsciiDoc` when creating new wiki pages.
 * For help on the syntax consult the http://asciidoctor.org/docs/asciidoc-writers-guide/[writers guide] and the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference].
 * Start every page with the following AsciiDoc header:
 +
@@ -103,12 +96,12 @@ toc::[]
 :idseparator: -
 --------
 +
-* In order to make internal links work both in wiki as well as in generated documentation (PDF, ePub, HTML) you need to stick to this rules:
+* In order to make internal links work both in asciidoc pages as well as in generated documentation (PDF, ePub, HTML) you need to stick to this rules:
 ** Do not use special characters (dot, ampersand, etc.) in section titles (use plain text e.g. "My Section")
-** If you link to a section, you simply use the section title in lower case with hyphens instead of spaces (e.g. "my-section"). Within the same wiki page you use `xref` (e.g. `xref :my-section[link title]`) and between wiki pages you use `link` (e.g. `link :guide-my-topic#my-section[link title]`).
-** In case you want to reference the top-level section of a wiki page you need to use +link+ without a section reference (e.g. `link :guide-my-topic[link title]`) and NOT `xref` even if you place the link within the same wiki page.
-** From wiki pages included in the generated documentation only use `link:` to other wiki pages that will also be part of the generated documentation. Otherwise you would produce dead links.
-* For editing larger files and offline work we recommend to clone the wiki with git and use an xref:asciidoc-tools[AsciiDoc editor tool].
+** If you link to a section, you simply use the section title in lower case with hyphens instead of spaces (e.g. "my-section"). Within the same asciidoc page you use `xref` (e.g. `xref :my-section[link title]`) and between asciidoc pages you use `link` (e.g. `link :«pagename».asciidoc#«section-name»[«link title»]`).
+** In case you want to reference the top-level section of a wiki page you need to use +link+ without a section reference (e.g. `link :«pagename».asciidoc[«link title»]`) and NOT `xref` even if you place the link within the same asciidoc page.
+** From asciidoc pages included in the generated documentation only use `link:` to other asciidoc pages that will also be part of the generated documentation. Otherwise you would produce dead links.
+* For editing larger files and offline work we recommend to clone the asciidoc documentation with git and use an xref:asciidoc-tools[AsciiDoc editor tool].
 * You need to ensure that the files use UTF-8 as encoding.
 * To include images you need to follow this rules:
 ** The best choice for high quality rendering is `SVG`. As the wiki does not create mimetypes you have to 
@@ -118,19 +111,19 @@ put the image on the https://github.com/devonfw/devonfw.github.io/[github pages]
 [source,asciidoc]
 --------
 .Image Title
-image::http://devonfw.github.io/devon4j/images/MyImage.svg["alt-text", width="450", link="http://devonfw.github.io/devon4j/images/MyImage.svg"]
+image::http://devonfw.github.io/devon4j/images/«MyImage».«format»["alt-text", width="450", link="http://devonfw.github.io/devon4j/images/«MyImage».«format»"]
 --------
-* For devonfw the wiki pages belong to categories that are also reflected by a naming convention:
+* For devonfw the asciidoc pages belong to categories that are also reflected by a naming convention:
 ** `coding-*` is used for pages about general aspects to development and writing code.
 ** `guide-*` is used for pages that act as a guide to a specific topic. It describes what to do and how to do it for that topic from the perspective of a developer.
 ** `alternative-*` is used for pages that are not part of the suggested standard but are commonly used or popular alternatives to a proposed standard solution. Such page explains how to use such an alternative solution.
 ** `architecture` is reserved for the architecture documentation.
 ** `introduction-*` is used for pages that are part of the introduction into the documentation (motivation and general goals).
-** `devon-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
+** `devonfw-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
 ** `tutorial-*` is used for pages that are part of the tutorials.
 
 == Migration
-If you migrate from devon-docgen 3.x to 4.x generating PDFs, you now have to add `-Doutput.format=pdf` to your maven build command. Similarly, for html generation it would be `-Doutput.format=html`.
+If you migrate from devon-docgen, you have to choose your target output format to generate via the `artifactId` of the `docgen` parent in your `pom.xml` (see `«format»` above). So instead of the `artifactId` which was `devon-docgen` you now have to use `devonfw-docgen-pdf` (or `devonfw-docgen-html` in case you generate HTML output).
 
 == Tooling
 Our DocGen tool is technically based on the following tools:
@@ -138,13 +131,10 @@ Our DocGen tool is technically based on the following tools:
 * http://maven.apache.org[maven]
 * http://asciidoctor.org[asciidoctor]
 ** via http://asciidoctor.org/docs/asciidoctor-maven-plugin[asciidoctor-maven-plugin]
-* http://www.docbook.org[docbook]
-** via http://docbkx-tools.sourceforge.net/docbkx-maven-plugin/plugin-info.html[docbkx-maven-plugin]
-** using http://docbook.sourceforge.net/release/xsl/current[docbook XSL distribution]
 * http://ant.apache.org[ant]
 ** via http://maven.apache.org/plugins/maven-antrun-plugin[maven-antrun-plugin]
 
-This setup was inspired by https://github.com/spring-projects/spring-boot/tree/master/spring-boot-docs/[spring-boot-docs] and improved for link processing, etc.
+This setup was inspired by https://github.com/spring-projects/spring-boot/tree/master/spring-boot-docs/[spring-boot-docs] and improved for link processing, ease of use, etc.
 Feel free to get inspired here or copy the entire solution if you like it.
 Thanks to all authors of the actual tools and to spring-boot for making this great DocGen happen.
 

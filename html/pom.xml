@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw.tools</groupId>
+    <artifactId>devonfw-docgen</artifactId>
+    <version>${revision}${changelist}</version>
+  </parent>
+  <artifactId>devonfw-docgen-html</artifactId>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <description>Generates documentation as HTML from AsciiDoc pages.</description>
+
+  <properties>
+    <docgen.highlighter>highlightjs</docgen.highlighter>
+    <docgen.backend>html5</docgen.backend>
+    <docgen.output.format>html</docgen.output.format>
+  </properties>
+
+</project>

@@ -10,6 +10,8 @@ jsclient/
 eclipse-target/
 **/src/generated/
 **/tmp/
+#Special case only in docgen cause README is copied to modules
+**/README.asciidoc
 
 # Package Files #
 *.jar
