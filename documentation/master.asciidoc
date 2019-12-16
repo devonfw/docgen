@@ -1,0 +1,21 @@
+= devonfw Documentation Generator
+The devonfw community
+${project.version}, ${buildtime}: Subtitle {doctitle}
+:sectnums:
+:toc:
+:toc-title: Table of Contents
+toc::[]
+
+DocGen is a tool that can generate a complete and self-contained documentation as PDF, ePub or HTML from Asciidoc pages.
+
+include::features.asciidoc[leveloffset=1]
+
+include::usage.asciidoc[leveloffset=1]
+
+include::guidelines.asciidoc[leveloffset=1]
+
+include::migration.asciidoc[leveloffset=1]
+
+include::tools.asciidoc[leveloffset=1]
+
+include::credits.asciidoc[leveloffset=1]

@@ -16,8 +16,8 @@
 
   <properties>
     <github.repository>devon-docgen</github.repository>
-    <docgen.wiki.page>README</docgen.wiki.page>
-    <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
+    <docgen.asciidoc.page>master</docgen.asciidoc.page>
+    <docgen.asciidoc.source>${basedir}/documentation</docgen.asciidoc.source>
     <docgen.asciidoc.target>${basedir}/target/asciidoc/</docgen.asciidoc.target>
     <docgen.asciidoc.extension>asciidoc</docgen.asciidoc.extension>
     <docgen.generated.docs>${basedir}/target/generated-docs/</docgen.generated.docs>
@@ -272,7 +272,7 @@
         <configuration>
           <skip>${asciidoctor.skip}</skip>
           <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
-          <sourceDocumentName>${docgen.wiki.page}.${docgen.asciidoc.extension}</sourceDocumentName>
+          <sourceDocumentName>${docgen.asciidoc.page}.${docgen.asciidoc.extension}</sourceDocumentName>
           <imagesDir>${docgen.generated.docs}</imagesDir>
           <backend>${docgen.backend}</backend>
           <sourceHighlighter>${docgen.highlighter}</sourceHighlighter>

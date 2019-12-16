@@ -34,7 +34,7 @@
               <skip>${asciidoctor.skip}</skip>
               <artifacts>
                 <artifact>
-                  <file>${docgen.generated.docs}/${docgen.wiki.page}.${docgen.output.format}</file>
+                  <file>${docgen.generated.docs}/${docgen.asciidoc.page}.${docgen.output.format}</file>
                   <type>${docgen.output.format}</type>
                 </artifact>
               </artifacts>

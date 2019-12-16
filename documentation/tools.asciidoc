@@ -1,0 +1,11 @@
+= Tools
+
+You can clone the documentation from the github repositoriy and edit it with an editor of your choice. For this we recommend one of the following tools:
+
+* http://www.asciidocfx.com/[AsciiDocFx]
+* https://plugins.jetbrains.com/plugin/7391-asciidoc[AsciiDoc for IntelliJ]
+* https://marketplace.visualstudio.com/items?itemName=joaompinto.asciidoctor-vscode[AsciiDoc for VS Code]
+* https://addons.mozilla.org/fr/firefox/addon/asciidoctorjs-live-preview/[Asciidoc for Firefox]
+* https://chrome.google.com/webstore/detail/asciidoctorjs-live-previe/iaalpfgpbocpdfblpnhhgllgbdbchmia[Asciidoc for Chrome]
+* https://atom.io/packages/asciidoc-preview[Asciidoc preview for Atom] and https://atom.io/packages/language-asciidoc[Asciidoc language for Atom]
+* https://github.com/asciidoctor/brackets-asciidoc-preview[Asciidoc for Brackets]

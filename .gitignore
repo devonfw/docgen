@@ -11,7 +11,10 @@ eclipse-target/
 **/src/generated/
 **/tmp/
 #Special case only in docgen cause README is copied to modules
-**/README.asciidoc
+all/documentation
+pdf/documentation
+init/documentation
+html/documentation
 
 # Package Files #
 *.jar

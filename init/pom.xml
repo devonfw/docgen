@@ -24,7 +24,7 @@
             <resource>
               <directory>${basedir}/../</directory>
               <includes>
-                <include>*.asciidoc</include>
+                <include>documentation/**/*</include>
               </includes>
             </resource>
           </resources>

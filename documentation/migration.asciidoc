@@ -1,0 +1,5 @@
+= Migration
+
+If you migrate from `devon-docgen` to `devonfw-docgen` (5.0.0+), you have to choose your target output format to generate via the `artifactId` of the `docgen` parent in your `pom.xml`. So instead of the `artifactId` which was `devon-docgen` you now have to use `devonfw-docgen-pdf` (or `devonfw-docgen-html` in case you generate HTML output).
+
+Also you need to know that the property `docgen.wiki.page` has been renamed to `docgen.asciidoc.page`.
