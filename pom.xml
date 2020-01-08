@@ -21,7 +21,7 @@
     <docgen.asciidoc.target>${basedir}/target/asciidoc</docgen.asciidoc.target>
     <docgen.asciidoc.extension>asciidoc</docgen.asciidoc.extension>
     <docgen.generated.docs>${basedir}/target/generated-docs</docgen.generated.docs>
-	  <docgen.docsource>${docgen.asciidoc.page}.${docgen.asciidoc.extension}</docgen.docsource>
+    <docgen.docsource>${docgen.asciidoc.page}.${docgen.asciidoc.extension}</docgen.docsource>
     <docgen.images.dir>images</docgen.images.dir>
     <docgen.highlighter>coderay</docgen.highlighter>
     <docgen.headerFooter>true</docgen.headerFooter>
@@ -130,7 +130,7 @@
                     <dirname property="file_path" file="@{asciidoc-file}" />
 
                     <!-- Remove the path from the root directory until current sourceDirectory to obtain a relative path -->
-					          <script language="beanshell"><![CDATA[
+		    <script language="beanshell"><![CDATA[
                       String path = project.getProperty("file_path");
                       String source = project.getProperty("basedir");
                       path = path.replace(source, "");
