@@ -276,11 +276,11 @@
           <sourceDocumentName>${docgen.docsource}</sourceDocumentName>
           <imagesDir>${docgen.generated.docs}</imagesDir>
           <backend>${docgen.backend}</backend>
-		      <outputDirectory>${docgen.generated.docs}</outputDirectory>
+          <outputDirectory>${docgen.generated.docs}</outputDirectory>
           <sourceHighlighter>${docgen.highlighter}</sourceHighlighter>
           <headerFooter>${docgen.headerFooter}</headerFooter>
           <preserveDirectories>${docgen.preserveDirectories}</preserveDirectories>
-		      <eruby>erb</eruby>
+          <eruby>erb</eruby>
           <attributes>
             <allow-uri-read />
             <icons>${docgen.icons}</icons>
