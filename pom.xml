@@ -131,8 +131,8 @@
 
                     <!-- Remove the path from the root directory until current sourceDirectory to obtain a relative path -->
                     <script language="beanshell"><![CDATA[
-                      String path = project.getProperty("file_path");
-                      String source = project.getProperty("basedir");
+                      String path = project.getProperty("file_path").replace("\\", "/");
+                      String source = project.getProperty("docgen.asciidoc.source").replace("\\", "/");
                       path = path.replace(source, "");
                       project.setProperty("path_to_copy_to", path);
                     ]]></script>
