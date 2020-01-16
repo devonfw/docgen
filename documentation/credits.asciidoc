@@ -1,0 +1,13 @@
+= Credits
+
+`devonfw-docgen` tool is technically based on the following tools:
+
+* http://maven.apache.org[maven]
+* http://asciidoctor.org[asciidoctor]
+** via http://asciidoctor.org/docs/asciidoctor-maven-plugin[asciidoctor-maven-plugin]
+* http://ant.apache.org[ant]
+** via http://maven.apache.org/plugins/maven-antrun-plugin[maven-antrun-plugin]
+
+This setup was inspired by https://github.com/spring-projects/spring-boot/tree/master/spring-boot-docs/[spring-boot-docs] and improved for link processing, ease of use, etc.
+Feel free to get inspired here or copy the entire solution if you like it.
+Thanks to all authors of the actual tools and to spring-boot for making this great `devonfw-docgen` possible.

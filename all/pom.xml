@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw.tools</groupId>
+    <artifactId>devonfw-docgen</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>devonfw-docgen-all</artifactId>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <description>Generates documentation as PDF and HTML from AsciiDoc pages.</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-html</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>html5</backend>
+              <sourceHighlighter>highlightjs</sourceHighlighter>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-pdf</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <skip>${asciidoctor.skip}</skip>
+              <artifacts>
+                <artifact>
+                  <file>${docgen.generated.docs}/${docgen.asciidoc.page}.pdf</file>
+                  <type>pdf</type>
+                </artifact>
+              </artifacts>
+              <archive>
+                <addMavenDescriptor>true</addMavenDescriptor>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,7 @@
+= Features
+With devonfw-docgen you can
+
+* maintain documentation on github in a folder together with you code or in github wiki as individual pages using http://www.methods.co.nz/asciidoc[asciidoc] based on our link:guidelines.asciidoc[guidelines].
+* generate a single and self-contained document as `PDF`, `ePub` or `HTML` from it
+* convert links between wiki pages into document internal links
+* have a single table of contents per complete document as well as per wiki page

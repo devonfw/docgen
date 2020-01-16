@@ -2,41 +2,52 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>2</version>
+  </parent>
   <groupId>com.devonfw.tools</groupId>
-  <artifactId>devon-docgen</artifactId>
-  <version>4.1.0</version>
+  <artifactId>devonfw-docgen</artifactId>
+  <version>5.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
-  <description>Documentation generator that can generate a complete and self-contained documentation as PDF, ePub and HTML from Asciidoc wiki pages.</description>
+  <description>Generates documentation as PDF, ePub or HTML from AsciiDoc wiki pages.</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <github.project>devonfw/devon-docgen</github.project>
-    <docgen.wiki.page>README</docgen.wiki.page>
+    <github.repository>devon-docgen</github.repository>
+    <docgen.asciidoc.page>documentation/master</docgen.asciidoc.page>
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
-    <docgen.asciidoc.target>${basedir}/target/asciidoc/</docgen.asciidoc.target>
-    <docgen.generated.docs>${basedir}/target/generated-docs/</docgen.generated.docs>
+    <docgen.asciidoc.target>${basedir}/target/asciidoc</docgen.asciidoc.target>
+    <docgen.asciidoc.extension>asciidoc</docgen.asciidoc.extension>
+    <docgen.generated.docs>${basedir}/target/generated-docs</docgen.generated.docs>
+    <docgen.docsource>${docgen.asciidoc.page}.${docgen.asciidoc.extension}</docgen.docsource>
     <docgen.images.dir>images</docgen.images.dir>
+    <docgen.highlighter>coderay</docgen.highlighter>
+    <docgen.headerFooter>true</docgen.headerFooter>
+    <docgen.preserveDirectories>true</docgen.preserveDirectories>
+    <docgen.linkcss>true</docgen.linkcss>
+    <docgen.toc>right</docgen.toc>
+    <docgen.icons>font</docgen.icons>
+    <docgen.idseparator>-</docgen.idseparator>
+    <docgen.highlighter>coderay</docgen.highlighter>
+    <docgen.backend>pdf</docgen.backend>
+    <docgen.output.format>pdf</docgen.output.format>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
     <asciidoctor.maven.plugin.version>1.6.0</asciidoctor.maven.plugin.version>
     <asciidoctorj.pdf.version>1.5.0-alpha.18</asciidoctorj.pdf.version>
+    <asciidoctorj.epub.version>1.5.0-alpha.9</asciidoctorj.epub.version>
+    <jruby.version>9.2.6.0</jruby.version>
     <asciidoctor.skip>false</asciidoctor.skip>
-    <!-- You have to define the target format by a console parameter: -Doutput.format=pdf / -Doutput.format=html -->
   </properties>
 
-  <url>https://github.com/${github.project}</url>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/${github.project}/issues</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:git:git@github.com:${github.project}.git</connection>
-    <developerConnection>scm:git:git@github.com:${github.project}.git</developerConnection>
-    <url>git@github.com:${github.project}.git</url>
-  </scm>
+  <modules>
+    <module>init</module>
+    <module>pdf</module>
+    <module>html</module>
+    <module>all</module>
+  </modules>
 
   <developers>
     <developer>
@@ -64,48 +75,11 @@
     </contributor>
   </contributors>
 
-  <organization>
-    <name>DevonFw</name>
-    <url>http://devonfw.com/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache Software License, Version 2.0</name>
-      <url>https://github.com/devonfw/devon-docgen/blob/master/LICENSE</url>
-      <distribution>repo</distribution>
-      <comments/>
-    </license>
-  </licenses>
-
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.7.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.doxia</groupId>
-            <artifactId>doxia-site-renderer</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
         <dependencies>
           <dependency>
             <groupId>ant-contrib</groupId>
@@ -136,77 +110,73 @@
             <configuration>
               <skip>${asciidoctor.skip}</skip>
               <target>
-                <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef resource="net/sf/antcontrib/antlib.xml" />
 
                 <for param="asciidoc-file">
                   <path>
                     <fileset dir="${docgen.asciidoc.source}" casesensitive="yes">
-                      <include name="**/*.asciidoc"/>
+                      <exclude name="**/target/**" />
+                      <include name="**/*.${docgen.asciidoc.extension}" />
                     </fileset>
                   </path>
                   <sequential>
 
                     <!-- unset variable to ensure it is properly updated in next property and dirname tasks -->
-                    <var name="path_to_copy_to" unset="true"/>
-                    <var name="file_path" unset="true"/>
+                    <var name="path_to_copy_to" unset="true" />
+                    <var name="file_path" unset="true" />
 
 
-                    <property name="path_to_copy_to" value=""/>
-                    <dirname property="file_path" file="@{asciidoc-file}"/>
+                    <property name="path_to_copy_to" value="" />
+                    <dirname property="file_path" file="@{asciidoc-file}" />
 
                     <!-- Remove the path from the root directory until current sourceDirectory to obtain a relative path -->
-                    <script language="javascript" classpathref="maven.plugin.classpath">
-                      // overwrite existing property.
-                      project.setProperty(
-                      'path_to_copy_to',
-                      project.getProperty('file_path').replace(
-                      project.getProperty('basedir'),
-                      ''
-                      ).replace(/\\/g,
-                      '/').replace('/', ''));
-                    </script>
+                    <script language="beanshell"><![CDATA[
+                      String path = project.getProperty("file_path").replace("\\", "/");
+                      String source = project.getProperty("docgen.asciidoc.source").replace("\\", "/");
+                      path = path.replace(source, "");
+                      project.setProperty("path_to_copy_to", path);
+                    ]]></script>
 
                     <!-- unset variable to ensure it is properly updated in next basename task -->
-                    <var name="filename" unset="true"/>
-                    <!--<basename property="filename" file="@{asciidoc-file}" suffix=".asciidoc"/> -->
-                    <basename property="filename" file="@{asciidoc-file}"/>
-                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}${path_to_copy_to}"
+                    <var name="filename" unset="true" />
+                    <basename property="filename" file="@{asciidoc-file}" />
+                    <copy file="@{asciidoc-file}" todir="${docgen.asciidoc.target}/${path_to_copy_to}"
                       encoding="${project.build.sourceEncoding}" outputencoding="${project.reporting.outputEncoding}"
                       verbose="true">
                       <filterchain>
                         <tokenfilter>
-                          <linetokenizer/>
+                          <linetokenizer />
                           <!-- make anchors unique by prefixing with filename -->
-                          <replaceregex pattern="\[\[" replace="[[${filename}_" flags="g"/>
+                          <replaceregex pattern="\[\[" replace="[[${filename}_" flags="g" />
                           <!-- automatically generate anchors for sections -->
                           <replaceregex pattern="^(==+) (.*)"
-                            replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g"/>
+                            replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g" />
 
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
                           <replaceregex pattern="include\:\:(.*)\[" replace="include::\1.asciidoc["
-                            flags="g"/>
+                            flags="g" />
                           <replaceregex
                             pattern="include\:\:(.*)((\.adoc)|(\.asc)|(\.asciidoc))(\.asciidoc)\["
-                            replace="include::\1\2[" flags="g"/>
+                            replace="include::\1\2[" flags="g" />
 
                           <!-- fix xrefs with default linktext to also include filename prefix -->
                           <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${filename}_\1[\1]"
-                            flags="g"/>
+                            flags="g" />
                           <!-- fix xrefs to also include filename prefix -->
-                          <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g"/>
+                          <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g" />
                           <!-- fix links without linktext -->
-                          <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g"/>
+                          <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g" />
                           <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
                           <replaceregex pattern="link:([^#:.\[]*)(#|\[)" replace="xref:\1.asciidoc\2"
-                            flags="g"/>
+                            flags="g" />
                           <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)\[" replace="xref:\1[" flags="g"/>
-                          <!-- fix links to anchor in other file (wik page) with default linktext by converting into xref
+                          <replaceregex pattern="link:([^#:]*)\[" replace="xref:\1[" flags="g" />
+                          <!-- fix links to anchor in other file (wik page) with default linktext by converting into xref 
                             inter document ref -->
                           <replaceregex pattern="link:([^#:]*)#([^\[]*)\[\]" replace="xref:\1_\2[\1#\2]"
-                            flags="g"/>
+                            flags="g" />
                           <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1_\2[" flags="g"/>
+                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1_\2[" flags="g" />
                           <scriptfilter language="beanshell" byline="true" setbeans="true"><![CDATA[
                             String text = self.getToken();
                             if (text.startsWith("[[")) {
@@ -217,16 +187,16 @@
                               }
                             }
                           ]]></scriptfilter>
-                          <!-- insert top-level anchor for file so links to this enire file work after being resolved as
+                          <!-- insert top-level anchor for file so links to this enire file work after being resolved as 
                             xref -->
                           <replaceregex pattern="^(=) " replace="[[${filename}]]${line.separator}\1 "
-                            flags="g"/>
+                            flags="g" />
                           <!-- resolve maven variables -->
                           <replaceregex pattern="\$\{project\.version\}" replace="${project.version}"
-                            flags="g"/>
+                            flags="g" />
                           <replaceregex pattern="\$\{project\.artifactId\}" replace="${project.artifactId}"
-                            flags="g"/>
-                          <replaceregex pattern="\$\{buildtime\}" replace="${buildtime}" flags="g"/>
+                            flags="g" />
+                          <replaceregex pattern="\$\{buildtime\}" replace="${buildtime}" flags="g" />
                         </tokenfilter>
                       </filterchain>
                     </copy>
@@ -237,11 +207,12 @@
                 <copy todir="${docgen.asciidoc.target}" encoding="${project.build.sourceEncoding}">
                   <path>
                     <fileset dir="${docgen.asciidoc.source}">
-                      <exclude name="**/*.asciidoc"/>
-                      <exclude name="**/target/**"/>
-                      <exclude name="**/${docgen.images.dir}/**/*"/>
+                      <exclude name="**/*.${docgen.asciidoc.extension}" />
+                      <exclude name="**/target/**" />
+                      <exclude name="**/pom.xml" />
+                      <exclude name="**/${docgen.images.dir}/**/*" />
                       <!-- exclude local m2 repository in Jenkins builds -->
-                      <exclude name="**/.repository/**"/>
+                      <exclude name="**/.repository/**" />
                     </fileset>
                   </path>
                 </copy>
@@ -253,7 +224,7 @@
                     <for param="imagesdir">
                       <path>
                         <dirset dir="${docgen.asciidoc.source}" casesensitive="yes">
-                          <include name="**/@{receiveddir}/**"/>
+                          <include name="**/@{receiveddir}/**" />
                         </dirset>
                       </path>
                       <sequential>
@@ -261,7 +232,7 @@
                         <copy todir="${docgen.asciidoc.target}/@{receiveddir}">
                           <path>
                             <fileset dir="@{imagesdir}">
-                              <include name="**/*"/>
+                              <include name="**/*" />
                             </fileset>
                           </path>
                         </copy>
@@ -291,146 +262,64 @@
           <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj-epub3</artifactId>
-            <version>1.5.0-alpha.9</version>
+            <version>${asciidoctorj.epub.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>${jruby.version}</version>
           </dependency>
         </dependencies>
         <configuration>
+          <skip>${asciidoctor.skip}</skip>
           <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
+          <sourceDocumentName>${docgen.docsource}</sourceDocumentName>
           <imagesDir>${docgen.generated.docs}</imagesDir>
-          <headerFooter>true</headerFooter>
+          <backend>${docgen.backend}</backend>
+          <outputDirectory>${docgen.generated.docs}</outputDirectory>
+          <sourceHighlighter>${docgen.highlighter}</sourceHighlighter>
+          <headerFooter>${docgen.headerFooter}</headerFooter>
+          <preserveDirectories>${docgen.preserveDirectories}</preserveDirectories>
+          <eruby>erb</eruby>
           <attributes>
-            <allow-uri-read/>
+            <allow-uri-read />
+            <icons>${docgen.icons}</icons>
+            <pagenums />
+            <experimental />
+            <toc>${docgen.toc}</toc>
+            <baseDir>./</baseDir>
+            <linkcss>${docgen.linkcss}</linkcss>
+            <idprefix />
+            <idseparator>${docgen.idseparator}</idseparator>
           </attributes>
         </configuration>
+        <executions>
+          <execution>
+            <id>generate-doc</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
+    <!-- should actually be moved to maven-parent -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>
     <profile>
-      <id>generate-pdf</id>
-      <activation>
-        <property>
-          <name>output.format</name>
-          <value>pdf</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-              <execution>
-                <id>attach-pdf</id>
-                <goals>
-                  <goal>attach-artifact</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <skip>${asciidoctor.skip}</skip>
-                  <artifacts>
-                    <artifact>
-                      <file>${docgen.generated.docs}/${docgen.wiki.page}.pdf</file>
-                      <type>pdf</type>
-                    </artifact>
-                  </artifacts>
-                  <archive>
-                    <addMavenDescriptor>true</addMavenDescriptor>
-                  </archive>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>oss</id>
-      <build>
-        <plugins>
-          <!-- Sign artifacts with PGP -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <configuration>
-              <keyname>${gpg.keyname}</keyname>
-            </configuration>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/releases</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-    </profile>
-    <profile>
-      <id>default-style</id>
-      <activation>
-        <property>
-          <name>output.format</name>
-          <value>pdf</value>
-        </property>
-        <file>
-          <missing>./theme/custom-theme.yml</missing>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-pdf-doc</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>process-asciidoc</goal>
-                </goals>
-                <configuration>
-                  <skip>${asciidoctor.skip}</skip>
-                  <sourceDocumentName>${docgen.wiki.page}.asciidoc</sourceDocumentName>
-                  <backend>pdf</backend>
-                  <sourceHighlighter>coderay</sourceHighlighter>
-                  <attributes>
-                    <icons>font</icons>
-                    <pagenums/>
-                    <toc/>
-                    <idprefix/>
-                    <idseparator>-</idseparator>
-                  </attributes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>custom-style</id>
       <activation>
-        <property>
-          <name>output.format</name>
-          <value>pdf</value>
-        </property>
         <file>
           <exists>./theme/custom-theme.yml</exists>
         </file>
@@ -440,79 +329,28 @@
           <plugin>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctor-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-pdf-doc</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>process-asciidoc</goal>
-                </goals>
-                <configuration>
-                  <skip>${asciidoctor.skip}</skip>
-                  <sourceDocumentName>${docgen.wiki.page}.asciidoc</sourceDocumentName>
-                  <backend>pdf</backend>
-                  <sourceHighlighter>coderay</sourceHighlighter>
-                  <attributes>
-                    <pdf-stylesdir>${basedir}/theme</pdf-stylesdir>
-                    <pdf-style>custom</pdf-style>
-                    <icons>font</icons>
-                    <pagenums/>
-                    <toc/>
-                    <idprefix/>
-                    <idseparator>-</idseparator>
-                  </attributes>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <attributes>
+                <pdf-stylesdir>${basedir}/theme</pdf-stylesdir>
+                <pdf-style>custom</pdf-style>
+              </attributes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
+    <!--
     <profile>
-      <id>generate-html-docs</id>
+      <id>documentation-folder</id>
       <activation>
-        <property>
-          <name>output.format</name>
-          <value>html</value>
-        </property>
+        <file>
+          <exists>./documentation</exists>
+        </file>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-html-doc</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>process-asciidoc</goal>
-                </goals>
-                <configuration>
-                  <skip>${asciidoctor.skip}</skip>
-                  <preserveDirectories>true</preserveDirectories>
-                  <imagesDir>${docgen.generated.docs}</imagesDir>
-                  <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
-                  <outputDirectory>${docgen.generated.docs}</outputDirectory>
-                  <backend>html5</backend>
-                  <sourceHighlighter>highlightjs</sourceHighlighter>
-                  <eruby>erb</eruby>
-                  <attributes>
-                    <icons>font</icons>
-                    <experimental/>
-                    <toc>right</toc>
-                    <pagenums/>
-                    <idprefix/>
-                    <idseparator>-</idseparator>
-                    <baseDir>./</baseDir>
-                    <linkcss>true</linkcss>
-                  </attributes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+      <properties>
+        <docgen.asciidoc.source>./documentation</docgen.asciidoc.source>
+      </properties>
     </profile>
+      -->
   </profiles>
 </project>

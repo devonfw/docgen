@@ -1,0 +1,62 @@
+= Usage
+
+== Setup
+1. Clone your git repository containing the asciidoc documentation to your local machine
+2. Create a pom.xml in the cloned repository (in `devonfw` inside the `documentation` subfolder) with the following content:
++
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.devonfw.tools</groupId>
+    <artifactId>devonfw-docgen-«format»</artifactId>
+    <version>5.0.0</version>
+  </parent>
+  <groupId>my.group.id</groupId>
+  <artifactId>my-artifact-id</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>My Cool Wiki</name>
+
+  <properties>
+    <docgen.asciidoc.page>«main-page»</docgen.asciidoc.page>
+  </properties>
+</project>
+```
+For `«format»` please fill in `pdf`, `html`, `epub`, or `all` to decide which format(s) you want to generate.
+For «main-page» fill in the filename of your main AsciiDoc file (without extension) to use as entry point for the generation.
+This file should contain the main title and configuration together with all the `include` directives to the individual AsciiDoc pages to include into your document.
+In case your project is not part of `devonfw` then also override the maven POM config (e.g. `licenses`, `scm`, `url`, `developers`, etc.) to suite to your needs.
+3. Add, commit and push it to github:
++
+[source,cmd]
+--------
+git add pom.xml
+git commit -m "added pom.xml for docgen"
+git push
+--------
+4. Optional custom theme:
+You can develop your own style by using the asciidoctor facilities. Therefore create your own theme in the path `theme/custom-theme.yml` and also push it together with your documentation.
+
+== Generation
+To start the generation manually you need to clone the documentation to generate as described above. Then open a command shell in the cloned project and call:
+[source,cmd]
+--------
+mvn clean package
+--------
+
+Then you will find the result in `target/generated-docs/`.
+
+If you want to deploy your documentation (e.g. to maven central) run:
+[source,cmd]
+--------
+mvn deploy -Pdeploy
+--------
+
+== Configuration
+You can tweak several configuration options. However, the defauls make sense and we recommend "convention-over-configuration".
+In case something does not fit, simply check the `properties` in our https://github.com/devonfw/docgen/blob/master/pom.xml[parent POM].
+For details also read the https://asciidoctor.org/docs/asciidoctor-maven-plugin/#configuration[asciidoctor-maven-plugin documentation].

@@ -1,17 +1,21 @@
-/target
-/.settings
 *.class
 *.classpath
 *.project
 *.iml
+*.jar
+*.war
+*.ear
 .*
+!.gitignore
+!.travis.yml
+!.mvn
 target/
-jsclient/
 eclipse-target/
 **/src/generated/
 **/tmp/
 
-# Package Files #
-*.jar
-*.war
-*.ear
+#Special case only in docgen cause documentation is copied to modules
+all/documentation
+pdf/documentation
+init/documentation
+html/documentation
