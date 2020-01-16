@@ -2,9 +2,9 @@
 
 `devonfw-docgen` is a tool that can generate a complete and self-contained documentation as PDF, ePub or HTML from Asciidoc pages.
 
-image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/devon-docgen/blob/develop/LICENSE]
-image:https://img.shields.io/maven-central/v/com.devonfw.tools/devon-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devon-docgen]
-image:https://travis-ci.org/devonfw/devon-docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/devon-docgen"]
+image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/docgen/blob/develop/LICENSE]
+image:https://img.shields.io/maven-central/v/com.devonfw.tools/devonfw-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devonfw-docgen]
+image:https://travis-ci.org/devonfw/docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/docgen"]
 
 == Documentation
 
