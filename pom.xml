@@ -33,6 +33,7 @@
     <docgen.highlighter>coderay</docgen.highlighter>
     <docgen.backend>pdf</docgen.backend>
     <docgen.output.format>pdf</docgen.output.format>
+    <docgen.eruby>erb</docgen.eruby>
     <buildtime>${maven.build.timestamp}</buildtime>
     <maven.build.timestamp.format>yyyy-MM-dd_HH.mm.ss</maven.build.timestamp.format>
     <asciidoctor.maven.plugin.version>1.6.0</asciidoctor.maven.plugin.version>
@@ -280,7 +281,7 @@
           <sourceHighlighter>${docgen.highlighter}</sourceHighlighter>
           <headerFooter>${docgen.headerFooter}</headerFooter>
           <preserveDirectories>${docgen.preserveDirectories}</preserveDirectories>
-          <eruby>erb</eruby>
+          <eruby>${docgen.eruby}</eruby>
           <attributes>
             <allow-uri-read />
             <icons>${docgen.icons}</icons>
