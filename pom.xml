@@ -154,7 +154,7 @@
                             replace="[[${filename}_\2]]${line.separator}\1 \2" flags="g" />
 
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
-                          <replaceregex pattern="include\:\:(?!.*\.)(.*)\[" replace="include::\1.asciidoc["
+                          <replaceregex pattern="include\:\:(.*/)?(?!.*\.)(.*)\[" replace="include::\1.asciidoc["
                             flags="g" />
                            <replaceregex pattern="include\:\:(.*)\/(?!.*\.)(.*)\[" replace="include::\1/\2.asciidoc["
                             flags="g" />
