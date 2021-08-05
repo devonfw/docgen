@@ -167,6 +167,8 @@
                           <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${filename}_\1[" flags="g" />
                           <!-- fix links without linktext -->
                           <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g" />
+                          <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
+                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1.asciidoc_\2[" flags="g" />
                           <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
                           <replaceregex pattern="link:([^#:.\[]*)(#|\[)" replace="xref:\1.asciidoc\2"
                             flags="g" />
@@ -176,8 +178,6 @@
                             inter document ref -->
                           <replaceregex pattern="link:([^#:]*)#([^\[]*)\[\]" replace="xref:\1_\2[\1#\2]"
                             flags="g" />
-                          <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1_\2[" flags="g" />
                           <scriptfilter language="beanshell" byline="true" setbeans="true"><![CDATA[
                             String text = self.getToken();
                             if (text.startsWith("[[")) {
