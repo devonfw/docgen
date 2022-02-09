@@ -6,11 +6,11 @@
   <parent>
     <groupId>com.devonfw.tools</groupId>
     <artifactId>devonfw-docgen</artifactId>
-    <version>2021.12.003-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>devonfw-docgen-init</artifactId>
   <packaging>pom</packaging>
-  <version>dev-SNAPSHOT</version>
+  <version>${revision}</version>
   <name>${project.artifactId}</name>
   <description>Internal module to copy documentation to all modules.</description>
 

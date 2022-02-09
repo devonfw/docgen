@@ -9,12 +9,13 @@
   </parent>
   <groupId>com.devonfw.tools</groupId>
   <artifactId>devonfw-docgen</artifactId>
-  <version>2021.12.003-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>Generates documentation as PDF, ePub or HTML from AsciiDoc wiki pages.</description>
 
   <properties>
+    <revision>2021.12.003-SNAPSHOT</revision>
     <github.repository>devon-docgen</github.repository>
     <docgen.asciidoc.page>documentation/master</docgen.asciidoc.page>
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
