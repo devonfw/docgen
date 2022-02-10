@@ -27,6 +27,7 @@ jobs:
 
       - name: Build
         run: |
+          ls -al
           CLI="${PWD}/scripts/devon"
           cd workspaces/main/docgen
           $CLI mvn install
