@@ -176,7 +176,7 @@
 
                       String filename = project.getProperty("filename");
                       String normalizedPrefix = (path + "/" + filename).replace("/", "_");
-					  if( normalizedPrefix.startsWith("_")) normalizedPrefix=normalizedPrefix.substring(1);
+                      if( normalizedPrefix.startsWith("_")) normalizedPrefix=normalizedPrefix.substring(1);
                       project.setProperty("norm_prefix", normalizedPrefix);
                     ]]></script>
 
