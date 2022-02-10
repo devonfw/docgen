@@ -13,7 +13,7 @@ jobs:
         with:
           maven-cache-key: dep-${{ hashFiles('**/pom.xml') }}
 
-      - name: Build
+      - name: Build & Test
         run: mvn install
 
   release:
@@ -32,11 +32,14 @@ jobs:
             mkdir ~/.devon
             touch ~/.devon/.license.agreement
             wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -
+            echo "DEVON_CLI=${PWD}/scripts/devon" >> $GITHUB_ENV
           
         - name: Clone Repository
           uses: actions/checkout@v2
           with: 
             path: 'workspaces/main/docgen'
+          
+        - run: cd workspaces/main/docgen
         
         - uses: devonfw-actions/java-maven-setup@v3
           with:
@@ -59,10 +62,7 @@ jobs:
             BUILD_USER: ${{ secrets.BUILD_USER }}
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
-          run: |
-            CLI="${PWD}/scripts/devon"
-            cd workspaces/main/docgen
-            $CLI release -f
+          run: $DEVON_CLI release -f
 
         - name: 'Get release tag'
           id: get_tag
