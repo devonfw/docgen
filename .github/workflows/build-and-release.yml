@@ -38,7 +38,7 @@ jobs:
           with: 
             path: 'workspaces/main/docgen'
         
-        - uses: devonfw-actions/java-maven-setup@v2
+        - uses: devonfw-actions/java-maven-setup@v3
           with:
             clone: false
             maven-cache-key: dep-${{ hashFiles('**/pom.xml') }}
