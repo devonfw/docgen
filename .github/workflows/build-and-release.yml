@@ -22,8 +22,14 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v2
+        with: 
+          path: 'workspaces/main/docgen'
 
-      - run: devon mvn install
+      - name: Build
+        run: |
+          CLI=scripts/devon
+          cd workspaces/main/docgen
+          $CLI mvn install
 
   release:
       needs: [build]
