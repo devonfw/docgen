@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.devonfw.tools</groupId>
     <artifactId>devonfw-docgen</artifactId>
-    <version>2021.12.003-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>devonfw-docgen-all</artifactId>
   <packaging>pom</packaging>
