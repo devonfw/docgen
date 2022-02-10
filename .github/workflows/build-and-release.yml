@@ -50,7 +50,7 @@ jobs:
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
           run: |
-            CLI="${PWD}/scripts/devon
+            CLI="${PWD}/scripts/devon"
             cd workspaces/main/docgen
             devon release -f
 
