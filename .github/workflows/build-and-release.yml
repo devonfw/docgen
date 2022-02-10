@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: download and setup IDE
         shell: bash
-        run: wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -q
+        run: wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -f
 
   build:
     needs: [setup-devonfw-ide]
