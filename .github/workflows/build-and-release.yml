@@ -20,7 +20,10 @@ jobs:
     needs: [setup-devonfw-ide]
     runs-on: ubuntu-latest
     steps:
-      - run: mvn install
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - run: devon mvn install
 
   release:
       needs: [build]
