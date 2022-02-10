@@ -52,7 +52,7 @@ jobs:
           run: |
             CLI="${PWD}/scripts/devon"
             cd workspaces/main/docgen
-            devon release -f
+            $CLI release -f
 
         - name: 'Get release tag'
           id: get_tag
