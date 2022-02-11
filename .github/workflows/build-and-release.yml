@@ -24,25 +24,11 @@ jobs:
       environment:
         name: production
       outputs:
-        release_tag: ${{ steps.get_tag.outputs.tagname }}
-      steps:
-        - name: download and setup IDE
-          shell: bash
-          run: |
-            mkdir ~/.devon
-            touch ~/.devon/.license.agreement
-            wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -
-            echo "DEVON_CLI=${PWD}/scripts/devon" >> $GITHUB_ENV
-            echo "PWD is $PWD"
-            ls -al
-            ls -al scripts
-          
-        - run: | 
-            echo "PWD is $PWD"
-            cd workspaces/main
-        
-        - uses: devonfw-actions/java-maven-setup@v3
+        release_tag: ${{ steps.release.outputs.tagname }}
+      steps:        
+        - uses: devonfw-actions/java-maven-setup@v4
           with:
+            repository_path: workspaces/main/docgen
             maven-cache-key: dep-${{ hashFiles('**/pom.xml') }}
             GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
             GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -62,15 +48,27 @@ jobs:
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
           run: |
-            echo "PWD is $PWD"
+            mkdir ~/.devon
+            touch ~/.devon/.license.agreement
+            wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -
+            DEVON_CLI="${PWD}/scripts/devon"
             find .
+            cd workspaces/main/docgen
             $DEVON_CLI release -f
+            
+            # Get tag name
+            SECOND_LAST_COMMIT_HASH=`git rev-parse @~`
+            TAG_NAME=`git describe --tags ${SECOND_LAST_COMMIT_HASH}`
+            # Strip leading spaces.
+            while [[ $TAG_NAME == ' '* ]]; do
+               TAG_NAME="${TAG_NAME## }"
+            done
+            # Strip trailing spaces.
+            while [[ $TAG_NAME == *' ' ]]; do
+                TAG_NAME="${TAG_NAME%% }"
+            done
 
-        - name: 'Get release tag'
-          id: get_tag
-          uses: "WyriHaximus/github-action-get-previous-tag@v1"
-          env:
-            GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
+            echo "::set-output name=tagname::${TAG_NAME}"
 
   github-release:
     needs: release
