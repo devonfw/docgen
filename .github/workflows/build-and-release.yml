@@ -24,7 +24,7 @@ jobs:
       environment:
         name: production
       outputs:
-        release_tag: ${{ steps.release.outputs.tagname }}
+        release_tag: ${{ steps.get_tag.outputs.tagname }}
       steps:        
         - uses: devonfw-actions/java-maven-setup@v5
           with:
@@ -57,6 +57,7 @@ jobs:
             $DEVON_CLI release -f
         
         - name: Get Release Tag
+          id: get_tag
           shell: bash
           run: |
             cd workspaces/main/docgen
@@ -74,6 +75,19 @@ jobs:
             done
 
             echo "::set-output name=tagname::${TAG_NAME}"
+          
+        - name: Push Sonatype Release
+          shell: bash
+          run: |
+            cd workspaces/main/docgen
+            mvn nexus-staging:release -s .mvn/settings.xml
+          
+        - name: Drop Sonatype Release
+          if: ${{ failure() }}
+          shell: bash
+          run: |
+            cd workspaces/main/docgen
+            mvn nexus-staging:drop -s .mvn/settings.xml
 
   github-release:
     needs: release
