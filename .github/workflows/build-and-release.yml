@@ -55,6 +55,11 @@ jobs:
             cd workspaces/main/docgen
             \cp .mvn/settings.xml ../../../conf/.m2/settings.xml
             $DEVON_CLI release -f
+        
+        - name: Get Release Tag
+          shell: bash
+          run: |
+            cd workspaces/main/docgen
             
             # Get tag name
             SECOND_LAST_COMMIT_HASH=`git rev-parse @~`
@@ -75,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.release_tag != '' }}
     steps:
-      - uses: devonfw-actions/create-github-release@v1
+      - uses: devonfw-actions/create-github-release@v2
         with:
           release_version: ${{ needs.release.outputs.release_tag }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
