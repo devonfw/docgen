@@ -37,7 +37,9 @@ jobs:
             ls -al
             ls -al scripts
           
-        - run: cd workspaces/main
+        - run: | 
+            echo "PWD is $PWD"
+            cd workspaces/main
         
         - uses: devonfw-actions/java-maven-setup@v3
           with:
@@ -48,8 +50,6 @@ jobs:
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
             
-        - run: ls -al
-          
         - name: Release
           id: release
           shell: bash
@@ -61,7 +61,10 @@ jobs:
             BUILD_USER: ${{ secrets.BUILD_USER }}
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
-          run: $DEVON_CLI release -f
+          run: |
+            echo "PWD is $PWD"
+            find .
+            $DEVON_CLI release -f
 
         - name: 'Get release tag'
           id: get_tag
