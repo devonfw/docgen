@@ -121,7 +121,7 @@ jobs:
         uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.34'
-	  
+
       - name: Apply new version to devonfw.com
         run: |
           find . -type f -name 'pom.xml' | xargs perl -0777 -pi -e 's|(<groupId>com.devonfw.tools</groupId>\s*<artifactId>devonfw-docgen[^<]*</artifactId>\s*<version>)[^<]+(</version>)|${1}${{ needs.release.outputs.release_tag }}$2|g'
@@ -136,4 +136,3 @@ jobs:
           event_type: dispatch-build-website
           repositories: |
             devonfw/devonfw.github.io
-		
