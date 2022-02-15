@@ -173,6 +173,11 @@
                         path = path.replaceFirst("/", "");
                       }
                       project.setProperty("path_to_copy_to", path);
+                      if(!path.isEmpty()) {
+                      project.setProperty("path_id_prefix", path + "_");
+                      } else {
+                        project.setProperty("path_id_prefix", "");
+                      }
 
                       String filename = project.getProperty("filename");
                       String normalizedPrefix = (path + "/" + filename).replace("/", "_");
@@ -189,38 +194,36 @@
                           <!-- make anchors unique by prefixing with filename -->
                           <replaceregex pattern="\[\[" replace="[[${norm_prefix}_" flags="g" />
                           <!-- automatically generate anchors for sections -->
-                          <replaceregex pattern="^(==+) (.*)"
-                            replace="[[${norm_prefix}_\2]]${line.separator}\1 \2" flags="g" />
+                          <replaceregex pattern="^(==+) (.*)" replace="[[${norm_prefix}_\2]]${line.separator}\1 \2" flags="g" />
 
                           <!-- fix includes to contain asciidoc suffix (what is omitted on github wiki) -->
-                          <replaceregex pattern="include\:\:(.*/)?(?!.*\.)(.*)\[" replace="include::\1\2.asciidoc["
-                            flags="g" />
+                          <replaceregex pattern="include\:\:(.*/)?(?!.*\.)(.*)\[" replace="include::\1\2.asciidoc[" flags="g" />
                           <replaceregex
                             pattern="include\:\:(.*)((\.adoc)|(\.asc)|(\.asciidoc))(\.asciidoc)\["
                             replace="include::\1\2[" flags="g" />
 
-                          <!-- fix xrefs with default linktext to also include filename prefix -->
-                          <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:${norm_prefix}_\1[\1]"
-                            flags="g" />
                           <!-- fix xrefs to also include filename prefix -->
-                          <replaceregex pattern="xref:([^\[]*)\[" replace="xref:${norm_prefix}_\1[" flags="g" />
-                          <!-- fix links without linktext -->
-                          <replaceregex pattern="link:([^#:]*)\[\]" replace="link:\1[\1]" flags="g" />
-                          <!-- fix links to anchor in other file (wik page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]*)#([^\[]*)\[" replace="xref:\1.asciidoc_\2[" flags="g" />
+                          <replaceregex pattern="xref:([^#\[]+)\[" replace="xref:${norm_prefix}_\1[" flags="g" />
+                          <!-- fix links to anchor in other file (wiki page) by converting into xref inter document ref -->
+                          <replaceregex pattern="link:([^#:]+)#([^\[]*)\[" replace="xref:${path_id_prefix}\1.asciidoc_\2[" flags="g" />
                           <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
-                          <replaceregex pattern="link:([^#:.\[]*)(#|\[)" replace="xref:\1.asciidoc\2" flags="g" />
+                          <replaceregex pattern="link:([^#:.\[]+)(#|\[)" replace="xref:${path_id_prefix}\1.asciidoc\2" flags="g" />
+                          <!-- transform links xref -->
+                          <replaceregex pattern="link:([^\]]+)(#|\[)" replace="xref:${path_id_prefix}\1\2" flags="g" />
+
+                          <!-- fix xrefs with default linktext to also include filename prefix -->
+                          <replaceregex pattern="xref:([^\[]*)\[\]" replace="xref:\1[\1]" flags="g" />
 
                           <!-- fix links to entire asciidoc file (wiki page) by converting into xref inter document ref -->
                           <!-- Unfortunately there is no generic way, thus supporting only files in directories of depth 2 -->
-                          <replaceregex pattern="link:([^#:/]+)/([^#:/]+)/([^#:/]+)\[" replace="xref:\1_\2_\3[" flags="g" />
-                          <replaceregex pattern="link:([^#:/]+)/([^#:/]+)\[" replace="xref:\1_\2[" flags="g" />
-                          <replaceregex pattern="link:([^#:/]+)\[" replace="xref:\1[" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)/([^#:/]+)/([^#:/]+)\[" replace="xref:\1_\2_\3[" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)/([^#:/]+)\[" replace="xref:\1_\2[" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)\[" replace="xref:\1[" flags="g" />
                           <!-- fix links to anchor in other file (wik page) with default linktext by converting into xref 
                             inter document ref -->
-                          <replaceregex pattern="link:([^#:/]+)/([^#:/]+)/([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2_\3_\4[\1_\2_\3#\4]" flags="g" />
-                          <replaceregex pattern="link:([^#:/]+)/([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2_\3[\1_\2#\3]" flags="g" />
-                          <replaceregex pattern="link:([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2[\1#\2]" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)/([^#:/]+)/([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2_\3_\4[\1_\2_\3#\4]" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)/([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2_\3[\1_\2#\3]" flags="g" />
+                          <replaceregex pattern="xref:([^#:/]+)#([^\[]*)\[\]" replace="xref:\1_\2[\1#\2]" flags="g" />
                           <scriptfilter language="beanshell" byline="true" setbeans="true"><![CDATA[
                             String text = self.getToken();
                             if (text.startsWith("[[")) {
@@ -231,15 +234,12 @@
                               }
                             }
                           ]]></scriptfilter>
-                          <!-- insert top-level anchor for file so links to this enire file work after being resolved as 
-                            xref -->
+                          <!-- insert top-level anchor for file so links to this enire file work after being resolved as xref -->
                           <replaceregex pattern="^(=) " replace="[[${norm_prefix}]]${line.separator}\1 "
                             flags="g" />
                           <!-- resolve maven variables -->
-                          <replaceregex pattern="\$\{project\.version\}" replace="${project.version}"
-                            flags="g" />
-                          <replaceregex pattern="\$\{project\.artifactId\}" replace="${project.artifactId}"
-                            flags="g" />
+                          <replaceregex pattern="\$\{project\.version\}" replace="${project.version}" flags="g" />
+                          <replaceregex pattern="\$\{project\.artifactId\}" replace="${project.artifactId}" flags="g" />
                           <replaceregex pattern="\$\{buildtime\}" replace="${buildtime}" flags="g" />
                         </tokenfilter>
                       </filterchain>
