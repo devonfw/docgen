@@ -155,6 +155,8 @@
 
                     <!-- unset variable to ensure it is properly updated in next property and dirname tasks -->
                     <var name="path_to_copy_to" unset="true" />
+                    <var name="path_id_prefix" unset="true" />
+                    <property name="path_id_prefix" value="" />
                     <var name="file_path" unset="true" />
 
 
