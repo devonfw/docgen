@@ -83,7 +83,7 @@ jobs:
           run: |
             set -e
             cd workspaces/main/docgen
-            mvn nexus-staging:release -s .mvn/settings.xml
+            mvn -Pdocgen-autodeploy nexus-staging:release -s .mvn/settings.xml
             echo "::set-output name=released::true"
           
         - name: Drop Sonatype Release
@@ -91,7 +91,7 @@ jobs:
           shell: bash
           run: |
             cd workspaces/main/docgen
-            mvn nexus-staging:drop -s .mvn/settings.xml
+            mvn -Pdocgen-autodeploy nexus-staging:drop -s .mvn/settings.xml
 
   github-release:
     needs: release
