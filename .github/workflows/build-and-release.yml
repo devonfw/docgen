@@ -92,7 +92,7 @@ jobs:
           shell: bash
           run: |
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdocgen-autodeploy nexus-staging:drop -s .mvn/settings.xml
+            $DEVON_CLI mvn -Pdocgen-autodeploy nexus-staging:drop -s .mvn/settings.xml -X
 
   github-release:
     needs: release
