@@ -58,7 +58,7 @@
       <organization>Capgemini</organization>
     </developer>
     <developer>
-      <name>Jörg Hohwillr</name>
+      <name>Jörg Hohwiller</name>
       <organization>Capgemini</organization>
     </developer>
     <developer>
@@ -80,6 +80,10 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
       <!-- Flatten POM -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
