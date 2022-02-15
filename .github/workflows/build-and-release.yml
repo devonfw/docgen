@@ -136,3 +136,41 @@ jobs:
           event_type: dispatch-build-website
           repositories: |
             devonfw/devonfw.github.io
+            
+  apply-to-guide:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: devonfw.com
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.release_tag != '' }}
+    steps:
+      - name: Clone Repository
+        uses: devonfw-actions/java-maven-setup@v7
+        with:
+          repository: 'devonfw/devonfw-guide'
+          GIT_TOKEN: ${{ secrets.GHA_TOKEN }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          BUILD_USER: ${{ secrets.BUILD_USER }}
+          BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
+          BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
+          
+      - name: Setup Perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: '5.34'
+
+      - name: Apply new version to devonfw.com
+        run: |
+          find . -type f -name 'pom.xml' | xargs perl -0777 -pi -e 's|(<groupId>com.devonfw.tools</groupId>\s*<artifactId>devonfw-docgen[^<]*</artifactId>\s*<version>)[^<]+(</version>)|${1}${{ needs.release.outputs.release_tag }}$2|g'
+          git add -u
+          git commit -m"Update docgen to latest version"
+          git push
+
+      - name: Dispatch Website Repository
+        uses: guilouro/multiple-repositories-dispatch@v1.0.0
+        with:
+          repo_token: ${{ secrets.GHA_TOKEN }}
+          event_type: dispatch-build-website
+          repositories: |
+            devonfw/devonfw-guide
