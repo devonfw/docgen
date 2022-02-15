@@ -368,7 +368,7 @@
 
   <profiles>
     <profile>
-      <id>docgen-autodeploy</id>
+      <id>deploy</id>
       <build>
         <plugins>
           <plugin>

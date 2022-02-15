@@ -84,7 +84,7 @@ jobs:
           run: |
             set -e
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdocgen-autodeploy nexus-staging:release -s .mvn/settings.xml
+            $DEVON_CLI mvn -Pdeploy nexus-staging:release -s .mvn/settings.xml
             echo "::set-output name=released::true"
           
         - name: Drop Sonatype Release
@@ -92,7 +92,7 @@ jobs:
           shell: bash
           run: |
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdocgen-autodeploy nexus-staging:drop -s .mvn/settings.xml -X
+            $DEVON_CLI mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml -X
 
   github-release:
     needs: release
