@@ -25,6 +25,7 @@ jobs:
         name: production
       outputs:
         release_tag: ${{ steps.get_tag.outputs.tagname }}
+        released: ${{ steps.push_release.outputs.released }}
       steps:        
         - uses: devonfw-actions/java-maven-setup@v5
           with:
@@ -78,9 +79,12 @@ jobs:
           
         - name: Push Sonatype Release
           shell: bash
+          id: push_release
           run: |
+            set -e
             cd workspaces/main/docgen
             mvn nexus-staging:release -s .mvn/settings.xml
+            echo "::set-output name=released::true"
           
         - name: Drop Sonatype Release
           if: ${{ failure() }}
@@ -92,7 +96,7 @@ jobs:
   github-release:
     needs: release
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.release_tag != '' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
     steps:
       - uses: devonfw-actions/create-github-release@v2
         with:
@@ -104,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: devonfw.com
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.release_tag != '' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
     steps:
       - name: Clone Repository
         uses: devonfw-actions/java-maven-setup@v7
@@ -142,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: devonfw.com
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.release_tag != '' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && && needs.release.outputs.released == 'true' }}
     steps:
       - name: Clone Repository
         uses: devonfw-actions/java-maven-setup@v7
