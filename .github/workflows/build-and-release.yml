@@ -56,6 +56,7 @@ jobs:
             cd workspaces/main/docgen
             \cp .mvn/settings.xml ../../../conf/.m2/settings.xml
             $DEVON_CLI release -f
+            echo "DEVON_CLI=$DEVON_CLI" >> $GITHUB_ENV
         
         - name: Get Release Tag
           id: get_tag
