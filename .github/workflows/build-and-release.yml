@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: devonfw.com
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && && needs.release.outputs.released == 'true' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
     steps:
       - name: Clone Repository
         uses: devonfw-actions/java-maven-setup@v7
