@@ -49,6 +49,7 @@ jobs:
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
           run: |
+            set -e
             mkdir ~/.devon
             touch ~/.devon/.license.agreement
             wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -
@@ -62,6 +63,7 @@ jobs:
           id: get_tag
           shell: bash
           run: |
+            set -e
             cd workspaces/main/docgen
             
             # Get tag name
@@ -91,8 +93,9 @@ jobs:
           if: ${{ failure() }}
           shell: bash
           run: |
+            set -e
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml -X
+            $DEVON_CLI mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml
 
   github-release:
     needs: release
@@ -129,6 +132,7 @@ jobs:
 
       - name: Apply new version to devonfw.com
         run: |
+          set -e
           find . -type f -name 'pom.xml' | xargs perl -0777 -pi -e 's|(<groupId>com.devonfw.tools</groupId>\s*<artifactId>devonfw-docgen[^<]*</artifactId>\s*<version>)[^<]+(</version>)|${1}${{ needs.release.outputs.release_tag }}$2|g'
           git add -u
           git commit -m"Update docgen to latest version"
@@ -167,6 +171,7 @@ jobs:
 
       - name: Apply new version to devonfw.com
         run: |
+          set -e
           find . -type f -name 'pom.xml' | xargs perl -0777 -pi -e 's|(<groupId>com.devonfw.tools</groupId>\s*<artifactId>devonfw-docgen[^<]*</artifactId>\s*<version>)[^<]+(</version>)|${1}${{ needs.release.outputs.release_tag }}$2|g'
           git add -u
           git commit -m"Update docgen to latest version"
