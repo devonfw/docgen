@@ -25,11 +25,9 @@ jobs:
         name: production
       outputs:
         release_tag: ${{ steps.get_tag.outputs.tag }}
-        released: ${{ steps.push_release.outputs.released }}
       steps:        
         - uses: devonfw-actions/java-maven-setup@v5
           with:
-            repository_path: workspaces/main/docgen
             maven-cache-key: dep-${{ hashFiles('**/pom.xml') }}
             GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
             GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -55,28 +53,11 @@ jobs:
           uses: "WyriHaximus/github-action-get-previous-tag@v1.1.0"
           env:
             GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
-          
-        - name: Push Sonatype Release
-          shell: bash
-          id: push_release
-          run: |
-            set -e
-            cd workspaces/main/docgen
-            mvn -Pdeploy nexus-staging:release -s .mvn/settings.xml
-            echo "::set-output name=released::true"
-          
-        - name: Drop Sonatype Release
-          if: ${{ failure() }}
-          shell: bash
-          run: |
-            set -e
-            cd workspaces/main/docgen
-            mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml
 
   github-release:
     needs: release
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && startsWith(needs.release.outputs.release_tag, 'release') }}
     steps:
       - uses: devonfw-actions/create-github-release@v2
         with:
@@ -88,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: devonfw.com
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && startsWith(needs.release.outputs.release_tag, 'release') }}
     steps:
       - name: Clone Repository
         uses: devonfw-actions/java-maven-setup@v7
@@ -127,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: devonfw.com
-    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && needs.release.outputs.released == 'true' }}
+    if: ${{ startsWith(github.repository, 'devonfw/') && github.ref == 'refs/heads/master' && startsWith(needs.release.outputs.release_tag, 'release') }}
     steps:
       - name: Clone Repository
         uses: devonfw-actions/java-maven-setup@v7
