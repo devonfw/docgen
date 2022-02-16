@@ -211,7 +211,7 @@
                           <!-- fix xrefs to also include filename prefix -->
                           <replaceregex pattern="xref:([^#\[]+)\[" replace="xref:${norm_prefix}_\1[" flags="g" />
                           <!-- fix links to anchor in other file (wiki page) by converting into xref inter document ref -->
-                          <replaceregex pattern="link:([^#:]+)#([^\[]*)\[" replace="xref:${path_id_prefix}\1.asciidoc_\2[" flags="g" />
+                          <replaceregex pattern="link:([^#:.]+)#([^\[]*)\[" replace="xref:${path_id_prefix}\1.asciidoc_\2[" flags="g" />
                           <!-- fix links to contain .asciidoc suffix if omitted (wiki) -->
                           <replaceregex pattern="link:([^#:.\[]+)(#|\[)" replace="xref:${path_id_prefix}\1.asciidoc\2" flags="g" />
                           <!-- transform links xref -->
