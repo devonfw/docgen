@@ -24,7 +24,7 @@ jobs:
       environment:
         name: production
       outputs:
-        release_tag: ${{ steps.get_tag.outputs.tagname }}
+        release_tag: ${{ steps.get_tag.outputs.tag }}
         released: ${{ steps.push_release.outputs.released }}
       steps:        
         - uses: devonfw-actions/java-maven-setup@v5
@@ -48,37 +48,13 @@ jobs:
             BUILD_USER: ${{ secrets.BUILD_USER }}
             BUILD_USER_PASSWD: ${{ secrets.BUILD_USER_PASSWD }}
             BUILD_USER_EMAIL: ${{ secrets.BUILD_USER_EMAIL }}
-          run: |
-            set -e
-            mkdir ~/.devon
-            touch ~/.devon/.license.agreement
-            wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.devonfw.tools.ide&a=devonfw-ide-scripts&v=LATEST&p=tar.gz' -O - | tar -xz && bash setup -
-            DEVON_CLI="${PWD}/scripts/devon"
-            cd workspaces/main/docgen
-            \cp .mvn/settings.xml ../../../conf/.m2/settings.xml
-            $DEVON_CLI release -f
-            echo "DEVON_CLI=$DEVON_CLI" >> $GITHUB_ENV
+          run: ./release.sh silent repo-mvn-settings
         
-        - name: Get Release Tag
+        - name: 'Get release tag'
           id: get_tag
-          shell: bash
-          run: |
-            set -e
-            cd workspaces/main/docgen
-            
-            # Get tag name
-            SECOND_LAST_COMMIT_HASH=`git rev-parse @~`
-            TAG_NAME=`git describe --tags ${SECOND_LAST_COMMIT_HASH}`
-            # Strip leading spaces.
-            while [[ $TAG_NAME == ' '* ]]; do
-               TAG_NAME="${TAG_NAME## }"
-            done
-            # Strip trailing spaces.
-            while [[ $TAG_NAME == *' ' ]]; do
-                TAG_NAME="${TAG_NAME%% }"
-            done
-
-            echo "::set-output name=tagname::${TAG_NAME}"
+          uses: "WyriHaximus/github-action-get-previous-tag@v1.1.0"
+          env:
+            GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
           
         - name: Push Sonatype Release
           shell: bash
@@ -86,7 +62,7 @@ jobs:
           run: |
             set -e
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdeploy nexus-staging:release -s .mvn/settings.xml
+            mvn -Pdeploy nexus-staging:release -s .mvn/settings.xml
             echo "::set-output name=released::true"
           
         - name: Drop Sonatype Release
@@ -95,7 +71,7 @@ jobs:
           run: |
             set -e
             cd workspaces/main/docgen
-            $DEVON_CLI mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml
+            mvn -Pdeploy nexus-staging:drop -s .mvn/settings.xml
 
   github-release:
     needs: release
