@@ -31,6 +31,9 @@ put the image on the https://github.com/devonfw/devonfw.github.io/[github pages]
 .Image Title
 image::http://devonfw.github.io/devon4j/images/«MyImage».«format»["alt-text", width="450", link="http://devonfw.github.io/devon4j/images/«MyImage».«format»"]
 --------
+* To improve readability of the raw asciidoc as well as to simplify resolving merge conflicts, please put every sentence into a new line.
++
+That is adding a newline after the end of the sentence (after period) and starting each new sentence in a new line in regular paragraphs.
 * For devonfw the asciidoc pages belong to categories that are also reflected by a naming convention:
 ** `coding-*` is used for pages about general aspects to development and writing code.
 ** `guide-*` is used for pages that act as a guide to a specific topic. It describes what to do and how to do it for that topic from the perspective of a developer.
