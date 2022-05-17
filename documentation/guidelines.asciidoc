@@ -18,7 +18,7 @@ toc::[]
 ** Do not use special characters (dot, ampersand, etc.) in section titles (use plain text e.g. "My Section")
 ** If you link to a section, you simply use the section title in lower case with hyphens instead of spaces (e.g. "my-section"). Within the same asciidoc page you use `xref` (e.g. `xref :my-section[link title]`) and between asciidoc pages you use `link` (e.g. `link :«pagename».asciidoc#«section-name»[«link title»]`).
 ** In case you want to reference the top-level section of a wiki page you need to use +link+ without a section reference (e.g. `link :«pagename».asciidoc[«link title»]`) and NOT `xref` even if you place the link within the same asciidoc page.
-** From asciidoc pages included in the generated documentation only use `link:` to other asciidoc pages that will also be part of the generated documentation (are somewhere included via `include::«pagename».asciidoc`). Otherwise you would produce dead links.
+** From asciidoc pages included in the generated documentation only use `link:` to other asciidoc pages that will also be part of the generated documentation (are included via `include::«pagename».asciidoc`). Otherwise you would produce dead links.
 * For editing larger files and offline work we recommend to clone the asciidoc documentation with git and use an xref:asciidoc-tools[AsciiDoc editor tool].
 * You need to ensure that the files use UTF-8 as encoding.
 * To include images you need to follow this rules:
