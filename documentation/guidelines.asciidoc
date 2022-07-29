@@ -14,31 +14,32 @@ toc::[]
 :idseparator: -
 --------
 +
-* In order to make internal links work both in asciidoc pages as well as in generated documentation (PDF, ePub, HTML) you need to stick to this rules:
-** Do not use special characters (dot, ampersand, etc.) in section titles (use plain text e.g. "My Section")
-** If you link to a section, you simply use the section title in lower case with hyphens instead of spaces (e.g. "my-section"). Within the same asciidoc page you use `xref` (e.g. `xref :my-section[link title]`) and between asciidoc pages you use `link` (e.g. `link :«pagename».asciidoc#«section-name»[«link title»]`).
-** In case you want to reference the top-level section of a wiki page you need to use +link+ without a section reference (e.g. `link :«pagename».asciidoc[«link title»]`) and NOT `xref` even if you place the link within the same asciidoc page.
+* [ ] In order to make internal links work both in asciidoc pages as well as in generated documentation (PDF, ePub, HTML) you need to stick to this rules:
+** [ ] Do not use special characters (dot, ampersand, etc.) in section titles (use plain text e.g. "My Section")
+** [ ] If you link to a section, you simply use the section title in lower case with hyphens instead of spaces (e.g. "my-section"). Within the same asciidoc page you use `xref` (e.g. `xref :my-section[link title]`) and between asciidoc pages you use `link` (e.g. `link :«pagename».asciidoc#«section-name»[«link title»]`).
+** [ ] In case you want to reference the top-level section of a wiki page you need to use +link+ without a section reference (e.g. `link :«pagename».asciidoc[«link title»]`) and NOT `xref` even if you place the link within the same asciidoc page.
 ** From asciidoc pages included in the generated documentation only use `link:` to other asciidoc pages that will also be part of the generated documentation (are included via `include::«pagename».asciidoc`). Otherwise you would produce dead links.
-* For editing larger files and offline work we recommend to clone the asciidoc documentation with git and use an xref:asciidoc-tools[AsciiDoc editor tool].
-* You need to ensure that the files use UTF-8 as encoding.
-* To include images you need to follow this rules:
-** The best choice for high quality rendering is `SVG`. As the wiki does not create mimetypes you have to 
+* [ ] For editing larger files and offline work we recommend to clone the asciidoc documentation with git and use an xref:asciidoc-tools[AsciiDoc editor tool].
+* [ ] You need to ensure that the files use UTF-8 as encoding.
+* [ ] To include images you need to follow this rules:
+** [ ] The best choice for high quality rendering is `SVG`. As the wiki does not create mimetypes you have to 
 put the image on the https://github.com/devonfw/devonfw.github.io/[github pages].
-** You have to set the size so it gets properly rendered in the PDF. The width value to make it fit properly on the PDF page is `450`:
+** [ ] Be careful when using images with transparent background. Github automatically supports lightmode and darkmode dependening on your OS settings and personal preferences. As a result the background may be white or black. Therefore on transparent background black text or lines  will be invisible in darkmode and white drawings will be invisible in lightmode. For diagrams the esiest solution is to use a background color to ensure visibility.
+** [ ] You have to set the size so it gets properly rendered in the PDF. The width value to make it fit properly on the PDF page is `450`:
 +
 [source,asciidoc]
 --------
 .Image Title
 image::http://devonfw.github.io/devon4j/images/«MyImage».«format»["alt-text", width="450", link="http://devonfw.github.io/devon4j/images/«MyImage».«format»"]
---------
-* To improve readability of the raw asciidoc as well as to simplify resolving merge conflicts, please put every sentence into a new line.
+-------- 
+* [ ] To improve readability of the raw asciidoc as well as to simplify resolving merge conflicts, please put every sentence into a new line.
 +
 That is adding a newline after the end of the sentence (after period) and starting each new sentence in a new line in regular paragraphs.
-* For devonfw the asciidoc pages belong to categories that are also reflected by a naming convention:
-** `coding-*` is used for pages about general aspects to development and writing code.
-** `guide-*` is used for pages that act as a guide to a specific topic. It describes what to do and how to do it for that topic from the perspective of a developer.
-** `alternative-*` is used for pages that are not part of the suggested standard but are commonly used or popular alternatives to a proposed standard solution. Such page explains how to use such an alternative solution.
-** `architecture` is reserved for the architecture documentation.
-** `introduction-*` is used for pages that are part of the introduction into the documentation (motivation and general goals).
-** `devonfw-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
-** `tutorial-*` is used for pages that are part of the tutorials.
+* [ ] For devonfw the asciidoc pages belong to categories that are also reflected by a naming convention:
+** [ ] `coding-*` is used for pages about general aspects to development and writing code.
+** [ ] `guide-*` is used for pages that act as a guide to a specific topic. It describes what to do and how to do it for that topic from the perspective of a developer.
+** [ ] `alternative-*` is used for pages that are not part of the suggested standard but are commonly used or popular alternatives to a proposed standard solution. Such page explains how to use such an alternative solution.
+** [ ] `architecture` is reserved for the architecture documentation.
+** [ ] `introduction-*` is used for pages that are part of the introduction into the documentation (motivation and general goals).
+** [ ] `devonfw-*` is used for pages that are about the devonfw itself and will not be part of the official documentation.
+** [ ] `tutorial-*` is used for pages that are part of the tutorials.
