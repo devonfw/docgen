@@ -1,10 +1,10 @@
 = Guidelines
 In order to make `devonfw-docgen` work properly please follow these guidelines:
 
-* Maintain the documentation as collection of http://www.methods.co.nz/asciidoc/[AsciiDoc] pages.
-* If you are using github wikis this is not the default: Always switch `Edit mode` to `AsciiDoc` when creating new wiki pages.
-* For help on the syntax consult the http://asciidoctor.org/docs/asciidoc-writers-guide/[writers guide] and the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference].
-* Start every page with the following AsciiDoc header:
+* [ ] Maintain the documentation as collection of http://www.methods.co.nz/asciidoc/[AsciiDoc] pages.
+* [ ] If you are using github wikis this is not the default: Always switch `Edit mode` to `AsciiDoc` when creating new wiki pages.
+* [ ] For help on the syntax consult the http://asciidoctor.org/docs/asciidoc-writers-guide/[writers guide] and the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference].
+* [ ] Start every page with the following AsciiDoc header:
 +
 [source,asciidoc]
 --------
