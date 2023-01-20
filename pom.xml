@@ -15,7 +15,6 @@
   <description>Generates documentation as PDF, ePub or HTML from AsciiDoc wiki pages.</description>
 
   <properties>
-    <revision>2023.01.002-SNAPSHOT</revision>
     <github.repository>devon-docgen</github.repository>
     <docgen.asciidoc.page>documentation/master</docgen.asciidoc.page>
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
