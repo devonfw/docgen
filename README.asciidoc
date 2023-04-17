@@ -4,7 +4,7 @@
 
 image:https://img.shields.io/github/license/devonfw/devon-docgen.svg?label=License["Apache License, Version 2.0",link=https://github.com/devonfw/docgen/blob/develop/LICENSE]
 image:https://img.shields.io/maven-central/v/com.devonfw.tools/devonfw-docgen.svg?label=Maven%20Central["Maven Central",link=https://search.maven.org/search?q=g:com.devonfw.tools+a:devonfw-docgen]
-image:https://travis-ci.org/devonfw/docgen.svg?branch=master["Build Status",link="https://travis-ci.org/devonfw/docgen"]
+image:https://github.com/devonfw/docgen/actions/workflows/build.yml/badge.svg["Build Status",link="https://github.com/devonfw/docgen/actions/workflows/build.yml"]
 
 == Documentation
 
