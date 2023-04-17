@@ -16,10 +16,11 @@
 
   <properties>
     <github.repository>devon-docgen</github.repository>
-    <docgen.asciidoc.page>documentation/master</docgen.asciidoc.page>
+    <docgen.asciidoc.page>master</docgen.asciidoc.page>
     <docgen.asciidoc.source>${basedir}</docgen.asciidoc.source>
     <docgen.asciidoc.target>${basedir}/target/asciidoc</docgen.asciidoc.target>
     <docgen.asciidoc.extension>asciidoc</docgen.asciidoc.extension>
+    <docgen.asciidoc.basedir>${docgen.asciidoc.target}</docgen.asciidoc.basedir>
     <docgen.generated.docs>${basedir}/target/generated-docs</docgen.generated.docs>
     <docgen.docsource>${docgen.asciidoc.page}.${docgen.asciidoc.extension}</docgen.docsource>
     <docgen.images.dir>images</docgen.images.dir>
@@ -321,7 +322,7 @@
         </dependencies>
         <configuration>
           <skip>${asciidoctor.skip}</skip>
-          <sourceDirectory>${docgen.asciidoc.target}</sourceDirectory>
+          <sourceDirectory>${docgen.asciidoc.basedir}</sourceDirectory>
           <sourceDocumentName>${docgen.docsource}</sourceDocumentName>
           <imagesDir>${docgen.generated.docs}</imagesDir>
           <backend>${docgen.backend}</backend>
@@ -388,18 +389,16 @@
         </plugins>
       </build>
     </profile>
-    <!--
     <profile>
       <id>documentation-folder</id>
       <activation>
         <file>
-          <exists>./documentation</exists>
+          <exists>${basedir}/documentation/master.asciidoc</exists>
         </file>
       </activation>
       <properties>
-        <docgen.asciidoc.source>./documentation</docgen.asciidoc.source>
+        <docgen.asciidoc.basedir>${basedir}/target/asciidoc/documentation</docgen.asciidoc.basedir>
       </properties>
     </profile>
-      -->
   </profiles>
 </project>
